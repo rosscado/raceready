@@ -2,4 +2,4 @@
 applications:
  - name: raceready
    host: raceready
-   memory: 128M
+   memory: 64MB
