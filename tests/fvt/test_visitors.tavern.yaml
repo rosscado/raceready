@@ -1,0 +1,10 @@
+---
+test_name: Get some names from the JSON visitors API
+
+stages:
+  - name: Get visitor names from the connected db
+    request:
+      url: http://staging-raceready.eu-gb.mybluemix.net/api/visitors
+      method: GET
+    response:
+      status_code: 200
