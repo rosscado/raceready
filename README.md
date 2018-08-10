@@ -13,70 +13,73 @@ You'll need the following to contribute:
 ## 1. Clone the app
 
 Now you're ready to start working with the app. Clone the repo and change to the directory where the sample app is located.
-  ```
+```bash
 git clone https://github.com/rosscado/raceready
 cd raceready
+```
 
 ## 2. Run the app locally
 
 Install the dependencies listed in the [requirements.txt](https://pip.readthedocs.io/en/stable/user_guide/#requirements-files) file to be able to run the app locally.
 
 You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
-  ```
+```bash
 python3.6 pip install --user -r requirements.txt
-  ```
+```
 
 Run the app.
-  ```
-python3.6 hello.py
-  ```
+```bash
+python3.6 apps/hello.py
+```
 
- View your app at: http://localhost:8000
+Your app is now running locally and can be viewed at: http://localhost:8000
 
-## 3. Prepare the app for deployment
+## 3. Preparing the app for cloud deployment
 
-To deploy to IBM Cloud, it can be helpful to set up a manifest.yml file. One is provided for you with the sample. Take a moment to look at it.
+The app contains a `manifest.yml` file containing directives for its deployment to IBM Cloud as a CloudFoundry app.
 
-The manifest.yml includes basic information about your app, such as the name, how much memory to allocate for each instance and the route. In this manifest.yml **random-route: true** generates a random route for your app to prevent your route from colliding with others.  You can replace **random-route: true** with **host: myChosenHostName**, supplying a host name of your choice. [Learn more...](https://console.bluemix.net/docs/manageapps/depapps.html#appmanifest)
- ```
+The manifest.yml includes basic information about the app, such as the name, how much memory to allocate for each instance and the route. [Learn more...](https://console.bluemix.net/docs/manageapps/depapps.html#appmanifest)
+ ```yaml
  applications:
  - name: raceready
    host: raceready
    memory: 128M
  ```
+ The app contains a [`runtime.txt`](https://docs.cloudfoundry.org/buildpacks/python/index.html) file directing CloudFoundry to use a particular version of Python when running the application.
 
-## 4. Deploy the app
+ The app contains a [`requirements.txt`](https://pip.readthedocs.io/en/stable/user_guide/#id1) file listing all the 3rd party Python modules required by the application. These are installed directly with the statement `pip install -r requirements.txt` or automatically by CloudFoundry's Python buildpack.
 
-You can use the Cloud Foundry CLI to deploy apps.
+ The app contains a `Procfile` instructing CloudFoundry's Python buildpack to run a particular [start command](https://docs.cloudfoundry.org/buildpacks/python/index.html) for the webapp. This could alternatively be specified on deploy with `cf push -c $custom_command`.
 
-Choose your API endpoint
-   ```
-cf api <API-endpoint>
-   ```
+## 4a. Deploy the app on cloud (automatic)
+The application's lifecycle is managed by a [toolchain](https://console.bluemix.net/devops/toolchains/0fc11092-0119-4ab8-a5f0-6cbf19d20e03?env_id=ibm:yp:eu-gb). The tool chain assembles all the project's development tools (git repos, issue tracking, online editors, delivery pipelines, etc.) in one place.
 
-Replace the *API-endpoint* in the command with an API endpoint from the following list.
+### Delivery Pipeline
+The toolchain includes a [Delivery Pipeline](https://console.bluemix.net/devops/pipelines/8de9b026-388d-4ebc-984e-5928d63a1d84?env_id=ibm:yp:eu-gb) that automatically builds, tests, and deploys the application on any commit to the `master` branch.
 
-|URL                             |Region          |
-|:-------------------------------|:---------------|
-| https://api.ng.bluemix.net     | US South       |
-| https://api.eu-de.bluemix.net  | Germany        |
-| https://api.eu-gb.bluemix.net  | United Kingdom |
-| https://api.au-syd.bluemix.net | Sydney         |
 
+## 4b. Deploy the app on cloud (manual)
+
+Using the toolchain is recommended, but alternatively you can also use the Cloud Foundry CLI to deploy the app manually.
+
+Choose your API endpoint. Our app is deployed to the UK-South (`eu-gb`) endpoint.
+```
+cf api https://api.eu-gb.bluemix.net
+```
 Login to your IBM Cloud account
 
-  ```
-cf login
-  ```
+```
+cf login [--sso]
+```
 
-From within the *get-started-python* directory push your app to IBM Cloud
-  ```
+From within the *raceready* directory push your app to IBM Cloud
+```
 cf push
-  ```
+```
 
-This can take a minute. If there is an error in the deployment process you can use the command `cf logs <Your-App-Name> --recent` to troubleshoot.
+This can take a minute. If there is an error in the deployment process you can use the command `cf logs raceready --recent` to troubleshoot.
 
-When deployment completes you should see a message indicating that your app is running.  View your app at the URL listed in the output of the push command.  You can also issue the
+When deployment completes you should see a message indicating that the app is running.  View your app at the URL listed in the output of the push command.  You can also issue the
   ```
 cf apps
   ```
@@ -131,4 +134,4 @@ python hello.py
 cf push
   ```
 
-  View your app at the URL listed in the output of the push command, for example, *myUrl.mybluemix.net*.
+  View your app at the URL listed in the output of the push command, for example, *raceready.mybluemix.net*.
