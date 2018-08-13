@@ -6,7 +6,7 @@ import json
 
 app = Flask(__name__, static_url_path='')
 
-db_name = 'mydb'
+db_name = 'events'
 client = None
 db = None
 
@@ -39,41 +39,43 @@ port = int(os.getenv('PORT', 8000))
 def root():
     return app.send_static_file('index.html')
 
-# /* Endpoint to greet and add a new visitor to database.
-# * Send a POST request to localhost:8000/api/visitors with body
-# * {
-# *     "name": "Bob"
-# * }
-# */
-@app.route('/api/visitors', methods=['GET'])
-def get_visitor():
-    if client:
-        return jsonify(list(map(lambda doc: doc['name'], db)))
-    else:
-        print('No database')
-        return jsonify([])
-
 # /**
-#  * Endpoint to get a JSON array of all the visitors in the database
+#  * Endpoint to get a JSON array of all the events in the database
 #  * REST API example:
 #  * <code>
-#  * GET http://localhost:8000/api/visitors
+#  * GET http://localhost:8000/api/events
 #  * </code>
 #  *
 #  * Response:
 #  * [ "Bob", "Jane" ]
-#  * @return An array of all the visitor names
+#  * @return An array of all the event titles
 #  */
-@app.route('/api/visitors', methods=['POST'])
-def put_visitor():
-    user = request.json['name']
-    data = {'name':user}
+@app.route('/api/events', methods=['GET'])
+def get_events():
     if client:
-        my_document = db.create_document(data)
-        data['_id'] = my_document['_id']
+        return jsonify(list(map(lambda doc: doc['title'], db)))
+    else:
+        print('No database connection')
+        return jsonify([])
+
+
+# /* Endpoint to greet and add a new visitor to database.
+# * See https://github.com/rosscado/raceready/wiki/Data-Model#event
+# * Send a POST request to localhost:8000/api/events with body
+# * {
+# *     "title": "Bob"
+# * }
+# */
+@app.route('/api/events', methods=['POST'])
+def put_event():
+    title = request.json['title']
+    data = {'title':title}
+    if client:
+        event_doc = db.create_document(data)
+        data['_id'] = event_doc['_id']
         return jsonify(data)
     else:
-        print('No database')
+        print('No database connection')
         return jsonify(data)
 
 @atexit.register
