@@ -35,8 +35,8 @@ elif os.path.isfile('vcap-local.json'):
 # When running this app on the local machine, default the port to 8000
 port = int(os.getenv('PORT', 8000))
 
-@app.route('/')
-def root():
+@app.route('/hello')
+def hello():
     return app.send_static_file('index.html')
 
 # /* Endpoint to greet and add a new visitor to database.

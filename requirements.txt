@@ -1,4 +1,5 @@
 Flask==1.0
+flask_restplus
 cloudant==2.4.0
 pytest
 tavern

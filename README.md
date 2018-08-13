@@ -24,12 +24,12 @@ Install the dependencies listed in the [requirements.txt](https://pip.readthedoc
 
 You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
 ```bash
-python3.6 pip install --user -r requirements.txt
+[python3.6] pip install --user -r requirements.txt
 ```
 
 Run the app.
 ```bash
-python3.6 apps/hello.py
+python3.6 apps/api.py
 ```
 
 Your app is now running locally and can be viewed at: http://localhost:8000
