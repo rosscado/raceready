@@ -29,7 +29,7 @@ You can optionally use a [virtual environment](https://packaging.python.org/inst
 
 Run the app.
 ```bash
-python3.6 apps/api.py
+python3.6 apps/app.py
 ```
 
 Your app is now running locally and can be viewed at: http://localhost:8000
