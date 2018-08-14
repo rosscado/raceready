@@ -1,16 +1,20 @@
 from flask import request
-from flask_restplus import Resource
-from apps.api.restplus import api
+from flask_restplus import Resource, fields
+from api.restplus import api
 
 ns = api.namespace('events', description='Operations related to scheduled events')
+an_event = api.model('Event', {'title' : fields.String('The name of the event as promoted publically')})
 
-events = {}
+events = []
+beggs = {'title': 'John Beggs Memorial'}
+events.append(beggs)
 
-@ns.route('/<string:id>')
+@ns.route('/')
 class Event(Resource):
-	def get(self, id):
-		return {'title': events[id]['title']}
+	def get(self):
+		return events
 
-	def put(self, id):
-		events[id] = {'title': request.form['title']}
-		return {'title': request.form['title']}
+	@api.expect(an_event)
+	def post(self):
+		events.append(api.payload)
+		return api.payload, 201
