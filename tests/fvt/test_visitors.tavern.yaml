@@ -1,10 +1,10 @@
 ---
-test_name: Get some names from the JSON visitors API
+test_name: Get some events from the JSON events API
 
 stages:
-  - name: Get visitor names from the connected db
+  - name: Get event titles from the connected db
     request:
-      url: http://staging-raceready.eu-gb.mybluemix.net/api/visitors
+      url: http://staging-raceready.eu-gb.mybluemix.net/api/events/
       method: GET
     response:
       status_code: 200

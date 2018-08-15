@@ -18,8 +18,6 @@ git clone https://github.com/rosscado/raceready
 cd raceready
 ```
 
-## 2. Run the app locally
-
 Install the dependencies listed in the [requirements.txt](https://pip.readthedocs.io/en/stable/user_guide/#requirements-files) file to be able to run the app locally.
 
 You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
@@ -27,12 +25,21 @@ You can optionally use a [virtual environment](https://packaging.python.org/inst
 [python3.6] pip install --user -r requirements.txt
 ```
 
+## 2.a Testing the app locally
+Test cases are written with `pytest` and `tavern` modules and are contained in the `/tests/` directory. The `/pytest.ini` file declares the test cases location to the `pytest` runner.
+Run the unit test suite as follows:
+```bash
+python3.6 -m pytest --ignore=tests/fvt  # unit tests only
+```
+
+## 2.b Running the app locally
+
 Run the app.
 ```bash
 python3.6 apps/app.py
 ```
 
-Your app is now running locally and can be viewed at: http://localhost:8000
+Your app is now running locally and can be viewed at: http://localhost:8000/api/
 
 ## 3. Preparing the app for cloud deployment
 
@@ -124,7 +131,7 @@ We're now going to update your local code to point to this database. We'll creat
 
 4. Run your application locally.
   ```
-python hello.py
+python3 apps/app.py
   ```
 
   View your app at: http://localhost:8000. Any names you enter into the app will now get added to the database.
