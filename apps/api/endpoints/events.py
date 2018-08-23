@@ -23,6 +23,7 @@ class Events(Resource):
 		#doc = db_client.create_document(api.payload)
 		events.append(api.payload)
 		doc = api.payload
+		doc['id'] = len(events)
 		return doc, 201
 
 ns.route('/<int:id>')
