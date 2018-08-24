@@ -21,9 +21,13 @@ def _post_event_fixture(client, title):
 def _get_event_fixture(client, id):
 	'''Return an event for use in test cases
 	Assumes that the `test_get_event` testcase passes
-	and that an event with {id} has already been created'''
+	and that an event with {id} has already been created.
+	Returns None (does not raise an error) if event not found'''
 	get_rv = client.get('/api/events/{id}'.format(id=id))
-	return get_rv.get_json()
+	if get_rv.status_code == 404:
+		return None
+	else:
+		return get_rv.get_json()
 
 # test assertion functions
 def assert_list(obj):
@@ -72,3 +76,12 @@ def test_put_event(client):
 	assert put_rv.status_code == 204
 	event_result = _get_event_fixture(client, event_fixture['id'])
 	assert 'title' in event_result and event_result['title'] == event_fixture['title']
+
+def test_delete_event(client):
+	"""Test DELETE /events/{id} API for event deletion"""
+	event_fixture = _post_event_fixture(client, 'DELETE Event Test')
+
+	delete_rv = client.delete('/api/events/{id}'.format(id=event_fixture['id']))
+	assert delete_rv.status_code == 204
+	event_result = _get_event_fixture(client, event_fixture['id'])
+	assert event_result is None
