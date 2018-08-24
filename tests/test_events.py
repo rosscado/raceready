@@ -57,4 +57,12 @@ def test_get_event(client):
 	assert 'title' in event_result and event_result['title'] == event_fixture['title']
 
 def test_put_event(client):
-	"""Test PUT /events/{id} API"""
+	"""Test PUT /events/{id} API for event modification"""
+	event_fixture = _post_event_fixture(client, 'PUT Event Test')
+	event_fixture['title'] = "{original} modified".format(original=event_fixture['title'])
+
+	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
+	event_result = put_rv.get_json()
+	assert event_result is not None
+	assert 'id' in event_result and event_result['id'] == event_fixture['id']
+	assert 'title' in event_result and event_result['title'] == event_fixture['title']
