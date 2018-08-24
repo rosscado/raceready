@@ -49,6 +49,14 @@ def test_get_events(client):
 	assert events_result is not None
 	assert_list(events_result)
 
+def test_get_events_not_empty(client):
+	"""Test GET /events API for events listing when events do exist"""
+	event_fixture = _post_event_fixture(client, 'GET Events Test')
+
+	rv = client.get('/api/events/')
+	events_result = rv.get_json()
+	assert events_result # assert that list is not None or empty
+
 def test_post_events(client):
 	'''Test POST /events API for event creation'''
 	event_fixture = {'title': 'The John Beggs'}
@@ -57,7 +65,6 @@ def test_post_events(client):
 	event_result = rv.get_json()
 	assert event_result is not None
 	assert event_result['title'] == event_fixture['title']
-	assert 'id' in event_result
 
 def test_get_event(client):
 	"""Test GET /events/{id} API"""
