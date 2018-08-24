@@ -44,8 +44,9 @@ def test_swagger(client):
 
 def test_get_events(client):
 	"""Test GET /events API for events listing"""
-	rv = client.get('/api/events/')
-	events_result = rv.get_json()
+	get_rv = client.get('/api/events/')
+	assert get_rv.status_code == 200
+	events_result = get_rv.get_json()
 	assert events_result is not None
 	assert_list(events_result)
 
@@ -53,24 +54,33 @@ def test_get_events_not_empty(client):
 	"""Test GET /events API for events listing when events do exist"""
 	event_fixture = _post_event_fixture(client, 'GET Events Test')
 
-	rv = client.get('/api/events/')
-	events_result = rv.get_json()
+	get_rv = client.get('/api/events/')
+	events_result = get_rv.get_json()
 	assert events_result # assert that list is not None or empty
 
 def test_post_events(client):
 	'''Test POST /events API for event creation'''
 	event_fixture = {'title': 'The John Beggs'}
 
-	rv = client.post('/api/events/', json=event_fixture)
-	event_result = rv.get_json()
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 201
+	event_result = post_rv.get_json()
 	assert event_result is not None
 	assert event_result['title'] == event_fixture['title']
+
+def test_post_events_no_title(client):
+	'''Test POST /events API for event creation when missing required fields'''
+	event_fixture = {} # missing required title field
+
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
 
 def test_get_event(client):
 	"""Test GET /events/{id} API"""
 	event_fixture = _post_event_fixture(client, 'GET Event Test')
 
 	get_rv = client.get('/api/events/{id}'.format(id=event_fixture['id']))
+	assert get_rv.status_code == 200
 	event_result = get_rv.get_json()
 	assert event_result is not None
 	assert 'id' in event_result and event_result['id'] == event_fixture['id']
@@ -93,7 +103,8 @@ def test_put_event(client):
 
 def test_put_event_not_found(client):
 	"""Test PUT /events/{id} API with a non-existent {id}"""
-	put_rv = client.put('/api/events/{id}'.format(id=non_existent_id), json={})
+	no_such_event_fixture = {'title': 'foo bar'}
+	put_rv = client.put('/api/events/{id}'.format(id=non_existent_id), json=no_such_event_fixture)
 	assert put_rv.status_code == 404
 
 def test_delete_event(client):
