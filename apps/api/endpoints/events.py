@@ -5,12 +5,16 @@ from database.clients import get_db
 from cloudant.result import Result
 
 ns = api.namespace('events', description='Operations related to scheduled events')
-an_event = api.model('Event', {'title' : fields.String('The name of the event as promoted publically')})
+an_event = api.model('Event', {
+	'id': fields.Integer(description='The unique identifier of an event', readonly=True),
+	'title' : fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial')
+	})
 
 events = []
 
 @ns.route('/')
 class Events(Resource):
+	@api.response(200, 'Events found')
 	def get(self):
 		db = get_db('events')
 		print("listing documents in events database".format(db.all_docs()))
@@ -19,6 +23,7 @@ class Events(Resource):
 		#return events
 
 	@api.expect(an_event)
+	@api.response(201, 'Event created successfully')
 	def post(self):
 		#doc = db_client.create_document(api.payload)
 		events.append(api.payload)
