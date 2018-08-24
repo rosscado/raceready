@@ -5,20 +5,25 @@ from database.clients import get_db
 from cloudant.result import Result
 
 ns = api.namespace('events', description='Operations related to scheduled events')
-an_event = api.model('Event', {'title' : fields.String('The name of the event as promoted publically')})
+an_event = api.model('Event', {
+	'id': fields.Integer(description='The unique identifier of an event', readonly=True),
+	'title' : fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial')
+	})
 
 events = []
 
 @ns.route('/')
 class Events(Resource):
+	@api.response(200, 'Events found')
 	def get(self):
-		db = get_db('events')
-		print("listing documents in events database".format(db.all_docs()))
-		all_events = Result(db.all_docs, include_docs=True)
-		return [event for event in all_events]
-		#return events
+		#db = get_db('events')
+		#print("listing documents in events database".format(db.all_docs()))
+		#all_events = Result(db.all_docs, include_docs=True)
+		#return [event for event in all_events]
+		return events
 
 	@api.expect(an_event)
+	@api.response(201, 'Event created')
 	def post(self):
 		#doc = db_client.create_document(api.payload)
 		events.append(api.payload)
@@ -26,7 +31,31 @@ class Events(Resource):
 		doc['id'] = len(events)
 		return doc, 201
 
-ns.route('/<int:id>')
-@api.response(404, 'Category not found.')
+@ns.route('/<int:id>')
+@api.response(404, 'Event not found')
 class Event(Resource):
-	pass
+	def get(self, id):
+		"""Returns details of an event"""
+		if 0 < id <= len(events):
+			return events[id-1], 200
+		else:
+			return None, 404
+
+	@api.expect(an_event)
+	@api.response(204, 'Event updated')
+	def put(self, id):
+		"""Updates attributes of an existing event"""
+		if 0 < id <= len(events):
+			events[id-1] = api.payload
+			return None, 204
+		else:
+			return None, 404
+
+	@api.response(204, 'Event deleted')
+	def delete(self, id):
+		"""Deletes an existing event"""
+		if 0 < id <= len(events):
+			del events[id-1]
+			return None, 204
+		else:
+			return None, 404
