@@ -35,3 +35,15 @@ def test_post_events(client):
 def verify_list(obj):
 	'''Return True iff obj is a list-like object'''
 	return 'index' in dir(obj) and 'append' in dir(obj)
+
+def test_get_event(client):
+	"""Test GET /event API"""
+	event = {'title': 'GET Event Test'}
+	post_rv = client.post('/api/events/', json=event)
+	event_id = post_rv.get_json()['id']
+
+	get_rv = client.get('/api/events/{id}'.format(id=event_id))
+	json_response = get_rv.get_json()
+	assert json_response is not None
+	assert 'id' in json_response and json_response['id'] == event_id
+	assert 'title' in json_response and json_response['title'] == event['title']
