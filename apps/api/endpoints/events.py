@@ -36,17 +36,26 @@ class Events(Resource):
 class Event(Resource):
 	def get(self, id):
 		"""Returns details of an event"""
-		return events[id-1]
+		if 0 < id <= len(events):
+			return events[id-1], 200
+		else:
+			return None, 404
 
 	@api.expect(an_event)
 	@api.response(204, 'Event updated')
 	def put(self, id):
 		"""Updates attributes of an existing event"""
-		events[id-1] = api.payload
-		return None, 204
+		if 0 < id <= len(events):
+			events[id-1] = api.payload
+			return None, 204
+		else:
+			return None, 404
 
 	@api.response(204, 'Event deleted')
 	def delete(self, id):
 		"""Deletes an existing event"""
-		del events[id-1]
-		return None, 204
+		if 0 < id <= len(events):
+			del events[id-1]
+			return None, 204
+		else:
+			return None, 404
