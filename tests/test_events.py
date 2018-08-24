@@ -30,6 +30,7 @@ def test_post_events(client):
 	json_resp = rv.get_json()
 	assert json_resp is not None
 	assert json_resp['title'] == 'The John Beggs'
+	assert 'id' in json_resp
 
 def verify_list(obj):
 	'''Return True iff obj is a list-like object'''
