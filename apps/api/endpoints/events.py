@@ -44,3 +44,9 @@ class Event(Resource):
 		"""Updates attributes of an existing event"""
 		events[id-1] = api.payload
 		return None, 204
+
+	@api.response(204, 'Event deleted')
+	def delete(self, id):
+		"""Deletes an existing event"""
+		del events[id-1]
+		return None, 204
