@@ -10,40 +10,51 @@ def client():
 
 	yield client
 
+# test fixture generator functions, called by test cases as needed
+def _post_event_fixture(client, title):
+	'''Create and return an event for use in test cases
+	Assumes that the `test_post_events` testcase passes'''
+	event = {'title': title}
+	post_rv = client.post('/api/events/', json=event)
+	return post_rv.get_json()
+
+# test assertion functions
+def assert_list(obj):
+	'''Return True iff obj is a list-like object'''
+	assert 'index' in dir(obj) and 'append' in dir(obj)
+
+# test case functions
 def test_swagger(client):
 	"""Test application root hosts swagger docs"""
 	rv = client.get('/api/')
 	assert b'swagger' in rv.data
 
 def test_get_events(client):
-	"""Test events collection api"""
+	"""Test GET /events API for events listing"""
 	rv = client.get('/api/events/')
-	json_resp = rv.get_json()
-	assert json_resp is not None
-	assert verify_list(json_resp)
+	events_result = rv.get_json()
+	assert events_result is not None
+	assert_list(events_result)
 
 def test_post_events(client):
-	'''Test event creation api'''
-	event = {'title': 'The John Beggs'}
+	'''Test POST /events API for event creation'''
+	event_fixture = {'title': 'The John Beggs'}
 
-	rv = client.post('/api/events/', json=event)
-	json_resp = rv.get_json()
-	assert json_resp is not None
-	assert json_resp['title'] == 'The John Beggs'
-	assert 'id' in json_resp
-
-def verify_list(obj):
-	'''Return True iff obj is a list-like object'''
-	return 'index' in dir(obj) and 'append' in dir(obj)
+	rv = client.post('/api/events/', json=event_fixture)
+	event_result = rv.get_json()
+	assert event_result is not None
+	assert event_result['title'] == event_fixture['title']
+	assert 'id' in event_result
 
 def test_get_event(client):
-	"""Test GET /event API"""
-	event = {'title': 'GET Event Test'}
-	post_rv = client.post('/api/events/', json=event)
-	event_id = post_rv.get_json()['id']
+	"""Test GET /events/{id} API"""
+	event_fixture = _post_event_fixture(client, 'GET Event Test')
 
-	get_rv = client.get('/api/events/{id}'.format(id=event_id))
-	json_response = get_rv.get_json()
-	assert json_response is not None
-	assert 'id' in json_response and json_response['id'] == event_id
-	assert 'title' in json_response and json_response['title'] == event['title']
+	get_rv = client.get('/api/events/{id}'.format(id=event_fixture['id']))
+	event_result = get_rv.get_json()
+	assert event_result is not None
+	assert 'id' in event_result and event_result['id'] == event_fixture['id']
+	assert 'title' in event_result and event_result['title'] == event_fixture['title']
+
+def test_put_event(client):
+	"""Test PUT /events/{id} API"""
