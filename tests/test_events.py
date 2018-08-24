@@ -2,6 +2,8 @@ import pytest
 
 from context import app # check sys.path if this fails
 
+non_existent_id='007404007' # does not match an resource, reliably gives a 404
+
 @pytest.fixture
 def client():
 	app.app.config['TESTING'] = True
@@ -67,6 +69,11 @@ def test_get_event(client):
 	assert 'id' in event_result and event_result['id'] == event_fixture['id']
 	assert 'title' in event_result and event_result['title'] == event_fixture['title']
 
+def test_get_event_not_found(client):
+	"""Test GET /events/{id} API with a non-existent {id}"""
+	get_rv = client.get('/api/events/{id}'.format(id=non_existent_id))
+	assert get_rv.status_code == 404
+
 def test_put_event(client):
 	"""Test PUT /events/{id} API for event modification"""
 	event_fixture = _post_event_fixture(client, 'PUT Event Test')
@@ -77,6 +84,11 @@ def test_put_event(client):
 	event_result = _get_event_fixture(client, event_fixture['id'])
 	assert 'title' in event_result and event_result['title'] == event_fixture['title']
 
+def test_put_event_not_found(client):
+	"""Test PUT /events/{id} API with a non-existent {id}"""
+	put_rv = client.put('/api/events/{id}'.format(id=non_existent_id), json={})
+	assert put_rv.status_code == 404
+
 def test_delete_event(client):
 	"""Test DELETE /events/{id} API for event deletion"""
 	event_fixture = _post_event_fixture(client, 'DELETE Event Test')
@@ -85,3 +97,8 @@ def test_delete_event(client):
 	assert delete_rv.status_code == 204
 	event_result = _get_event_fixture(client, event_fixture['id'])
 	assert event_result is None
+
+def test_delete_event_not_found(client):
+	"""Test DELETE /events/{id} API with a non-existent {id}"""
+	delete_rv = client.delete('/api/events/{id}'.format(id=non_existent_id))
+	assert delete_rv.status_code == 404
