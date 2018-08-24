@@ -26,7 +26,9 @@ class Events(Resource):
 		doc['id'] = len(events)
 		return doc, 201
 
-ns.route('/<int:id>')
-@api.response(404, 'Category not found.')
+@ns.route('/<int:id>')
+@api.response(404, 'Event not found')
 class Event(Resource):
-	pass
+	def get(self, id):
+		"""Returns details of an event"""
+		return events[id-1]
