@@ -25,6 +25,7 @@ Use a [virtual environment](https://packaging.python.org/installing/#creating-an
 python3 -m venv py3env
 source py3env/bin/activate
 
+pip install --upgrade pip # get the latest pip
 python -m pip install --user -r requirements.txt
 ```
 
@@ -95,23 +96,22 @@ cf apps
   ```
   command to view your apps status and see the URL.
 
-## 5. Add a database
+## 5. Database for persistence
 
-Next, we'll add a NoSQL database to this application and set up the application so that it can run locally and on IBM Cloud.
+The `raceready` application connects to a NoSQL database on IBM Cloud.
 
-1. Log in to IBM Cloud in your Browser. Browse to the `Dashboard`. Select your application by clicking on its name in the `Name` column.
-2. Click on `Connections` then `Connect new`.
-2. In the `Data & Analytics` section, select `Cloudant NoSQL DB` and `Create` the service.
-3. Select `Restage` when prompted. IBM Cloud will restart your application and provide the database credentials to your application using the `VCAP_SERVICES` environment variable. This environment variable is only available to the application when it is running on IBM Cloud.
+* The application's Cloudant service instances and their connected applications are listed under the [`Data & Analytics` section](https://console.bluemix.net/services/cloudantnosqldb/6df81126-94cd-48a7-a94d-dc49621eac7f?paneId=connectedObjects&ace_config=%7B%22region%22%3A%22eu-gb%22%2C%22orgGuid%22%3A%22639a52b7-76ff-42e0-93b8-77353d27bafe%22%2C%22spaceGuid%22%3A%228bb7aeb1-658d-4eb3-9487-faa25d2633fa%22%2C%22redirect%22%3A%22https%3A%2F%2Fconsole.bluemix.net%2Fdashboard%2Fapps%3Fenv_id%3Dibm%253Ayp%253Aeu-gb%22%2C%22bluemixUIVersion%22%3A%22v6%22%2C%22crn%22%3A%22crn%3Av1%3Abluemix%3Apublic%3Acloudantnosqldb%3Aeu-gb%3As%2F8bb7aeb1-658d-4eb3-9487-faa25d2633fa%3A6df81126-94cd-48a7-a94d-dc49621eac7f%3Acf-service-instance%3A%22%2C%22id%22%3A%226df81126-94cd-48a7-a94d-dc49621eac7f%22%7D&env_id=ibm%3Ayp%3Aeu-gb).
+* An application instance's connection to a Cloudant service instance is configured in [`Cloud Foundry apps`](https://console.bluemix.net/dashboard/apps?env_id=ibm%3Ayp%3Aeu-gb)/``$app_name`/`Connections`
 
-Environment variables enable you to separate deployment settings from your source code. For example, instead of hardcoding a database password, you can store this in an environment variable which you reference in your source code. [Learn more...](/docs/manageapps/depapps.html#app_env)
+Environment variables separate deployment settings from source code. For example, instead of hardcoding a database password, this is stored in an environment variable referenced in source code. [Learn more...](/docs/manageapps/depapps.html#app_env)
+Database credentials and other connection information is exposed to the application using the `VCAP_SERVICES` environment variable. This environment variable is only available to the application when it is running on IBM Cloud.
 
-## 6. Use the database
+## 6. Using the database
 
-We're now going to update your local code to point to this database. We'll create a json file that will store the credentials for the services the application will use. This file will get used ONLY when the application is running locally. When running in IBM Cloud, the credentials will be read from the VCAP_SERVICES environment variable.
+Our local application instances can also point to the cloud-hosted database instance(s). A json file stores the credentials for the services the application will use. This file will get used ONLY when the application is running locally. When running in IBM Cloud, the credentials will be read from the VCAP_SERVICES environment variable.
 
-1. Create a file called `vcap-local.json` in the `get-started-python` directory with the following content:
-  ```
+The local-profile file is called `vcap-local.json` in the `apps` directory with the following format:
+  ```json
   {
     "services": {
       "cloudantNoSQLDB": [
@@ -128,20 +128,4 @@ We're now going to update your local code to point to this database. We'll creat
   }
   ```
 
-2. Back in the IBM Cloud UI, select your App -> Connections -> Cloudant -> View Credentials
-
-3. Copy and paste the `username`, `password`, and `host` from the credentials to the same fields of the `vcap-local.json` file replacing **CLOUDANT_DATABASE_USERNAME**, **CLOUDANT_DATABASE_PASSWORD**, and **CLOUDANT_DATABASE_URL**.
-
-4. Run your application locally.
-  ```
-python apps/app.py
-  ```
-
-  View your app at: http://localhost:8000. Any names you enter into the app will now get added to the database.
-
-5. Make any changes you want and re-deploy to IBM Cloud!
-  ```
-cf push
-  ```
-
-  View your app at the URL listed in the output of the push command, for example, *raceready.mybluemix.net*.
+The values for `vcap-local.json` come from the IBM Cloud UI, where we select `App -> Connections -> Cloudant -> View Credentials`.
