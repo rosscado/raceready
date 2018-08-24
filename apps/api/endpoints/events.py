@@ -23,7 +23,7 @@ class Events(Resource):
 		#return events
 
 	@api.expect(an_event)
-	@api.response(201, 'Event created successfully')
+	@api.response(201, 'Event created')
 	def post(self):
 		#doc = db_client.create_document(api.payload)
 		events.append(api.payload)
@@ -37,3 +37,10 @@ class Event(Resource):
 	def get(self, id):
 		"""Returns details of an event"""
 		return events[id-1]
+
+	@api.expect(an_event)
+	@api.response(204, 'Event updated')
+	def put(self, id):
+		"""Updates attributes of an existing event"""
+		events[id-1] = api.payload
+		return None, 204

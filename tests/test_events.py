@@ -18,6 +18,13 @@ def _post_event_fixture(client, title):
 	post_rv = client.post('/api/events/', json=event)
 	return post_rv.get_json()
 
+def _get_event_fixture(client, id):
+	'''Return an event for use in test cases
+	Assumes that the `test_get_event` testcase passes
+	and that an event with {id} has already been created'''
+	get_rv = client.get('/api/events/{id}'.format(id=id))
+	return get_rv.get_json()
+
 # test assertion functions
 def assert_list(obj):
 	'''Return True iff obj is a list-like object'''
@@ -62,7 +69,6 @@ def test_put_event(client):
 	event_fixture['title'] = "{original} modified".format(original=event_fixture['title'])
 
 	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
-	event_result = put_rv.get_json()
-	assert event_result is not None
-	assert 'id' in event_result and event_result['id'] == event_fixture['id']
+	assert put_rv.status_code == 204
+	event_result = _get_event_fixture(client, event_fixture['id'])
 	assert 'title' in event_result and event_result['title'] == event_fixture['title']
