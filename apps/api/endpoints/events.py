@@ -16,11 +16,11 @@ events = []
 class Events(Resource):
 	@api.response(200, 'Events found')
 	def get(self):
-		db = get_db('events')
-		print("listing documents in events database".format(db.all_docs()))
-		all_events = Result(db.all_docs, include_docs=True)
-		return [event for event in all_events]
-		#return events
+		#db = get_db('events')
+		#print("listing documents in events database".format(db.all_docs()))
+		#all_events = Result(db.all_docs, include_docs=True)
+		#return [event for event in all_events]
+		return events
 
 	@api.expect(an_event)
 	@api.response(201, 'Event created')
