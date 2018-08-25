@@ -60,17 +60,25 @@ def test_get_events_not_empty(client):
 
 def test_post_events(client):
 	'''Test POST /events API for event creation'''
-	event_fixture = {'title': 'The John Beggs'}
+	event_fixture = {'title': 'The John Beggs', 'date': '2018/08/11'}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 201
 	event_result = post_rv.get_json()
 	assert event_result is not None
 	assert event_result['title'] == event_fixture['title']
+	assert event_result['date'] == event_fixture['date']
 
 def test_post_events_no_title(client):
 	'''Test POST /events API for event creation when missing required fields'''
 	event_fixture = {} # missing required title field
+
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+def test_post_events_invalid_date(client):
+	'''Test POST /events API for event creation when date field is not a date'''
+	event_fixture = {'title': 'Invalid Date Event', 'date': 'foo bar'}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 400
