@@ -8,7 +8,8 @@ ns = api.namespace('events', description='Operations related to scheduled events
 an_event = api.model('Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
 	'title': fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial'),
-	'date': fields.Date(description='When will the event take place? ISO 8601 format: YYYY-MM-DD', example='2018-08-11')
+	'date': fields.Date(description='When will the event take place? ISO 8601 format: YYYY-MM-DD', example='2018-08-11'),
+	'url': fields.Url(description='The primary URL promoting the event', example='http://www.banbridgecc.com/thebeggs18/')
 	})
 
 events = []

@@ -60,7 +60,11 @@ def test_get_events_not_empty(client):
 
 def test_post_events(client):
 	'''Test POST /events API for event creation'''
-	event_fixture = {'title': 'The John Beggs', 'date': '2018-08-11'}
+	event_fixture = {
+		'title': 'The John Beggs',
+		'date': '2018-08-11',
+		'url': 'https://goo.gl/tVymnx'
+	}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 201
