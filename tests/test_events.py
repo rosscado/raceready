@@ -94,16 +94,6 @@ def test_post_events_invalid_date(client):
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 400
 
-def test_post_events_invalid_url(client):
-	'''Test POST /events API for event creation when url field is not valid URL format'''
-	event_fixture = {'title': 'Invalid URL Event', 'url': 'foo bar'}
-	post_rv = client.post('/api/events/', json=event_fixture)
-	assert post_rv.status_code == 400
-
-	event_fixture['url'] = 'goo.gl/tVymnx' # close but no cigar
-	post_rv = client.post('/api/events/', json=event_fixture)
-	assert post_rv.status_code == 400
-
 def test_get_event(client):
 	"""Test GET /events/{id} API"""
 	event_fixture = _post_event_fixture(client, 'GET Event Test')
