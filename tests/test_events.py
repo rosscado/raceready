@@ -60,7 +60,11 @@ def test_get_events_not_empty(client):
 
 def test_post_events(client):
 	'''Test POST /events API for event creation'''
-	event_fixture = {'title': 'The John Beggs', 'date': '2018-08-11'}
+	event_fixture = {
+		'title': 'The John Beggs',
+		'date': '2018-08-11',
+		'url': 'https://goo.gl/tVymnx'
+	}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 201
@@ -87,6 +91,16 @@ def test_post_events_invalid_date(client):
 	assert post_rv.status_code == 400
 
 	event_fixture['date'] = '11-08-2018' # close but no cigar
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+def test_post_events_invalid_url(client):
+	'''Test POST /events API for event creation when url field is not valid URL format'''
+	event_fixture = {'title': 'Invalid URL Event', 'url': 'foo bar'}
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+	event_fixture['url'] = 'goo.gl/tVymnx' # close but no cigar
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 400
 
