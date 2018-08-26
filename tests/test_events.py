@@ -3,6 +3,7 @@ import pytest
 from context import app # check sys.path if this fails
 
 non_existent_id='007404007' # does not match an resource, reliably gives a 404
+arbitrary_date='1970-01-01' # a date to use when the date doesn't matter (UNIX epoch)
 
 @pytest.fixture
 def client():
@@ -13,10 +14,10 @@ def client():
 	yield client
 
 # test fixture generator functions, called by test cases as needed
-def _post_event_fixture(client, title):
+def _post_event_fixture(client, title, date=arbitrary_date, type='road race'):
 	'''Create and return an event for use in test cases
 	Assumes that the `test_post_events` testcase passes'''
-	event = {'title': title}
+	event = {'title': title, 'date': date, 'type': type}
 	post_rv = client.post('/api/events/', json=event)
 	return post_rv.get_json()
 
@@ -78,12 +79,24 @@ def test_post_events(client):
 	assert event_result['location'] == event_fixture['location']
 	assert event_result['type'] == event_fixture['type']
 
-def test_post_events_no_title(client):
+def test_post_events_required_fields(client):
 	'''Test POST /events API for event creation when missing required fields'''
 	event_fixture = {} # missing required title field
 
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 400
+
+	event_fixture['title'] = 'Title required field'
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+	event_fixture['date'] = arbitrary_date
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+	event_fixture['type'] = 'road race'
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 201 # all required fields supplied
 
 def test_post_events_invalid_date(client):
 	'''Test POST /events API for event creation when date field is not ISO format'''
@@ -137,9 +150,27 @@ def test_put_event(client):
 
 def test_put_event_not_found(client):
 	"""Test PUT /events/{id} API with a non-existent {id}"""
-	no_such_event_fixture = {'title': 'foo bar'}
+	no_such_event_fixture = {'title': 'foo bar', 'date': arbitrary_date, 'type': 'road race'}
 	put_rv = client.put('/api/events/{id}'.format(id=non_existent_id), json=no_such_event_fixture)
 	assert put_rv.status_code == 404
+
+def test_put_event_required_fields(client):
+	"""Test PUT /events/{id} API for event modification when required fields are missing"""
+	event_fixture = _post_event_fixture(client, 'PUT Event Test Required')
+
+	del event_fixture['title']
+	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
+	assert put_rv.status_code == 400
+
+	event_fixture['title'] = 'Title restored'
+	del event_fixture['date']
+	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
+	assert put_rv.status_code == 400
+
+	event_fixture['date'] = arbitrary_date
+	del event_fixture['type'] # type is a required field, must be supplied despite having a default value
+	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
+	assert put_rv.status_code == 400
 
 def test_delete_event(client):
 	"""Test DELETE /events/{id} API for event deletion"""
