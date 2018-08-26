@@ -64,7 +64,8 @@ def test_post_events(client):
 		'title': 'The John Beggs',
 		'date': '2018-08-11',
 		'url': 'https://goo.gl/tVymnx',
-		'location': 'Dromore, Co. Down'
+		'location': 'Dromore, Co. Down',
+		'type': 'road race'
 	}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
@@ -75,6 +76,7 @@ def test_post_events(client):
 	assert event_result['date'] == event_fixture['date']
 	assert event_result['url'] == event_fixture['url']
 	assert event_result['location'] == event_fixture['location']
+	assert event_result['type'] == event_fixture['type']
 
 def test_post_events_no_title(client):
 	'''Test POST /events API for event creation when missing required fields'''
@@ -94,6 +96,16 @@ def test_post_events_invalid_date(client):
 	assert post_rv.status_code == 400
 
 	event_fixture['date'] = '11-08-2018' # close but no cigar
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+def test_post_events_invalid_type(client):
+	'''Test POST /events API for event creation when type field is recognised value'''
+	event_fixture = {'title': 'Invalid Type Event', 'type': 'foo bar'}
+	post_rv = client.post('/api/events/', json=event_fixture)
+	assert post_rv.status_code == 400
+
+	event_fixture['date'] = 'race' # close but no cigar
 	post_rv = client.post('/api/events/', json=event_fixture)
 	assert post_rv.status_code == 400
 
