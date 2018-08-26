@@ -1,11 +1,49 @@
+'''
+This module contains business logic for CRUD of resources
+It determines how and where to persist server-side resources
+'''
+
 from flask_restplus import fields
 from api.restplus import api
 
+class TransientModel:
+	def __init__(self):
+		self.events = []
+
+	def get_events(self):
+		return self.events
+
+	def create_event(self, payload):
+		#doc = db_client.create_document(api.payload)
+		self.events.append(payload)
+		doc = payload
+		doc['id'] = len(self.events)
+		return doc
+
+	def get_event(self, id):
+		if 0 < id <= len(self.events):
+			return self.events[id-1]
+		else:
+			return None
+
+	def update_event(self, id, payload):
+		self.events[id-1] = payload
+
+	def delete_event(self, id):
+		del self.events[id-1]
+
+
 from database.clients import get_db
 from cloudant.result import Result
+class PeristentModel:
+	def __init__(self, db_name):
+		self.db = get_db(db_name)
 
-# this module contains business logic for CRUD of resources
-# it determines how and where to persist server-side resources
+	def get_events(self):
+		print("listing documents in events database".format(db.all_docs()))
+		all_events = Result(db.all_docs, include_docs=True)
+		return [event for event in all_events]
+
 
 an_event = api.model('Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
@@ -16,30 +54,4 @@ an_event = api.model('Event', {
 	'type': fields.String(required=True,description='The type of event. Is a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race', example='road race')
 	})
 
-events = []
-
-def get_events():
-	#db = get_db('events')
-	#print("listing documents in events database".format(db.all_docs()))
-	#all_events = Result(db.all_docs, include_docs=True)
-	#return [event for event in all_events]
-	return events
-
-def create_event(payload):
-	#doc = db_client.create_document(api.payload)
-	events.append(payload)
-	doc = payload
-	doc['id'] = len(events)
-	return doc
-
-def get_event(id):
-	if 0 < id <= len(events):
-		return events[id-1]
-	else:
-		return None
-
-def update_event(id, payload):
-	events[id-1] = payload
-
-def delete_event(id):
-	del events[id-1]
+data_store = TransientModel()
