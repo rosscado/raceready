@@ -1,10 +1,63 @@
 ---
 test_name: Get some events from the JSON events API
 
+includes:
+  - !include config.yaml
+
 stages:
   - name: Get event titles from the connected db
     request:
-      url: http://staging-raceready.eu-gb.mybluemix.net/api/events/
+      url: "{api.server}/api/events/"
       method: GET
     response:
       status_code: 200
+
+---
+test_name: Event lifecycle
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create an event
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: Lifecycle test event
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_fixture_id: id
+
+  - name: Retrieve the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        title: Lifecycle test event
+
+  - name: Update the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Lifecycle test event updated
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
+  - name: Delete the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204

@@ -63,7 +63,8 @@ def test_post_events(client):
 	event_fixture = {
 		'title': 'The John Beggs',
 		'date': '2018-08-11',
-		'url': 'https://goo.gl/tVymnx'
+		'url': 'https://goo.gl/tVymnx',
+		'location': 'Dromore, Co. Down'
 	}
 
 	post_rv = client.post('/api/events/', json=event_fixture)
@@ -72,6 +73,8 @@ def test_post_events(client):
 	assert event_result is not None
 	assert event_result['title'] == event_fixture['title']
 	assert event_result['date'] == event_fixture['date']
+	assert event_result['url'] == event_fixture['url']
+	assert event_result['location'] == event_fixture['location']
 
 def test_post_events_no_title(client):
 	'''Test POST /events API for event creation when missing required fields'''
