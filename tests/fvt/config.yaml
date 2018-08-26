@@ -1,0 +1,7 @@
+---
+name: test suite configuration
+description: configure the application endpoints
+
+variables:
+  api:
+    server: http://staging-raceready.eu-gb.mybluemix.net
