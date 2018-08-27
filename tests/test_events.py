@@ -8,7 +8,7 @@ arbitrary_date='1970-01-01' # a date to use when the date doesn't matter (UNIX e
 @pytest.fixture
 def client():
 	app.app.config['TESTING'] = True
-	app.app.config['DATABASE'] = 'test_events'
+	app.app.config['DATABASE'] = 'unittests'
 	client = app.app.test_client()
 
 	yield client
