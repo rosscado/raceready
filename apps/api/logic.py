@@ -44,6 +44,10 @@ class PeristentModel:
 		all_events = Result(db.all_docs, include_docs=True)
 		return [event for event in all_events]
 
+event_status = api.model('Status', {
+	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'completed'], default='scheduled', example='scheduled'),
+	'url': fields.String(description='The primary URL where notice of the most recent state change was posted', example='http://www.banbridgecc.com/eventcancellation/')
+})
 
 an_event = api.model('Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
@@ -51,7 +55,8 @@ an_event = api.model('Event', {
 	'date': fields.Date(required=True,description='When will the event take place? ISO 8601 format: YYYY-MM-DD', example='2018-08-11'),
 	'url': fields.String(description='The primary URL promoting the event', example='http://www.banbridgecc.com/thebeggs18/'),
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
-	'type': fields.String(required=True,description='The type of event. Is a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race', example='road race')
+	'type': fields.String(required=True,description='The type of event. Is a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race', example='road race'),
+	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally')
 	})
 
 data_store = TransientModel()

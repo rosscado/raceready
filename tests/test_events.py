@@ -185,3 +185,15 @@ def test_delete_event_not_found(client):
 	"""Test DELETE /events/{id} API with a non-existent {id}"""
 	delete_rv = client.delete('/api/events/{id}'.format(id=non_existent_id))
 	assert delete_rv.status_code == 404
+
+def test_put_event_status(client):
+	"""Test PUT /events/{id} API for event status modification"""
+	event_fixture = _post_event_fixture(client, 'PUT Event Status Test')
+	assert 'status' not in event_fixture # test has default status
+
+	event_status_fixture = {'state': 'cancelled', 'url': 'http://sorryaboutthat.com/notice'}
+	event_fixture['status'] = event_status_fixture
+	put_rv = client.put('/api/events/{id}'.format(id=event_fixture['id']), json=event_fixture)
+	assert put_rv.status_code == 204
+	event_result = _get_event_fixture(client, event_fixture['id'])
+	assert 'status' in event_result and event_result['status'] == event_fixture['status']
