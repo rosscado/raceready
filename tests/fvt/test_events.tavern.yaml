@@ -59,6 +59,33 @@ stages:
     response:
       status_code: 204
 
+  - name: Cancel the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Lifecycle test event cancelled
+        date: "1970-01-02"
+        type: road race
+        status:
+          state: cancelled
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
+  - name: Check the event status
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        status:
+          state: cancelled
+
   - name: Delete the event
     request:
       url: "{api.server}/api/events/{event_fixture_id}"
