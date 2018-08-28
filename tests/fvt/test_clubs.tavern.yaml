@@ -32,7 +32,7 @@ stages:
       status_code: 201
       save:
         body:
-          event_fixture_id: id
+          club_fixture_id: id
 
   - name: Retrieve the club
     request:
