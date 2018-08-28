@@ -96,7 +96,6 @@ class TestEvents(ResourceTestCase):
 
 	def test_put_event_required_fields(self, client, event_fixture):
 		"""Test PUT /events/{id} API for event modification when required fields are missing"""
-
 		event_fixture_min = {
 			'title': event_fixture['title'],
 			'date': event_fixture['date'],
