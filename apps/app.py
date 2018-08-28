@@ -3,6 +3,7 @@ from flask_restplus import Resource, Api
 from database.clients import init_db, shutdown_db
 from api.restplus import api
 from api.endpoints.events import ns as events_namespace
+from api.endpoints.clubs import ns as clubs_namespace
 import atexit
 import os
 import json
@@ -13,6 +14,7 @@ def init_app(flask_app):
 	blueprint = Blueprint('api', __name__, url_prefix='/api')
 	api.init_app(blueprint)
 	api.add_namespace(events_namespace)
+	api.add_namespace(clubs_namespace)
 	flask_app.register_blueprint(blueprint)
 
 @atexit.register

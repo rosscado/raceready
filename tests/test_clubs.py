@@ -120,7 +120,6 @@ def test_put_club_required_fields(client):
 	assert put_rv.status_code == 400
 
 	club_fixture['title'] = 'Title restored'
-	del club_fixture['date']
 	put_rv = client.put('/api/clubs/{id}'.format(id=club_fixture['id']), json=club_fixture)
 	assert put_rv.status_code == 204
 

@@ -9,7 +9,9 @@ from api.restplus import api
 class TransientModel:
 	def __init__(self):
 		self.events = []
+		self.clubs = []
 
+	# event related functions
 	def get_events(self):
 		return self.events
 
@@ -32,6 +34,28 @@ class TransientModel:
 	def delete_event(self, id):
 		del self.events[id-1]
 
+	# club related functions
+	def get_clubs(self):
+		return self.clubs
+
+	def create_club(self, payload):
+		#doc = db_client.create_document(api.payload)
+		self.clubs.append(payload)
+		doc = payload
+		doc['id'] = len(self.clubs)
+		return doc
+
+	def get_club(self, id):
+		if 0 < id <= len(self.clubs):
+			return self.clubs[id-1]
+		else:
+			return None
+
+	def update_club(self, id, payload):
+		self.clubs[id-1] = payload
+
+	def delete_club(self, id):
+		del self.clubs[id-1]
 
 from database.clients import get_db
 from cloudant.result import Result
@@ -48,6 +72,12 @@ event_status = api.model('Status', {
 	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'completed'], default='scheduled', example='scheduled'),
 	'url': fields.String(description='The primary URL where notice of the most recent state change was posted', example='http://www.banbridgecc.com/eventcancellation/')
 })
+
+a_club = api.model('Club', {
+	'id': fields.Integer(description='The unique identifier of a club (internal)', readonly=True),
+	'title': fields.String(required=True, description='The full name of the club', example='Clontarf Cycling Club'),
+	'url': fields.String(description="The club's primary web address", example='http://www.clontarfcycling.com/')
+	})
 
 an_event = api.model('Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
