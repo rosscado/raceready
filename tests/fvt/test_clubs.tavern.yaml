@@ -1,0 +1,65 @@
+---
+test_name: Get some clubs from the JSON clubs API
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Get club titles from the connected db
+    request:
+      url: "{api.server}/api/clubs/"
+      method: GET
+    response:
+      status_code: 200
+
+---
+test_name: Clubs lifecycle
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create a club
+    request:
+      url: "{api.server}/api/clubs/"
+      json:
+        title: Lifecycle test club
+        url: http://www.velowarecc.com/
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_fixture_id: id
+
+  - name: Retrieve the club
+    request:
+      url: "{api.server}/api/clubs/{club_fixture_id}"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        title: Lifecycle test club
+
+  - name: Update the club
+    request:
+      url: "{api.server}/api/clubs/{club_fixture_id}"
+      json:
+        title: Lifecycle test club updated
+        url: https://www.velowarecc.com/welcome/
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
+  - name: Delete the club
+    request:
+      url: "{api.server}/api/clubs/{club_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204
