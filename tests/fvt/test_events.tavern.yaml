@@ -92,3 +92,41 @@ stages:
       method: DELETE
     response:
       status_code: 204
+
+---
+test_name: Event organisers
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create an event
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: Club test event
+        date: "1970-01-01"
+        type: road race
+        organised_by:
+          title: Veloware CC
+          url: http://www.veloware.cc/
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_fixture_id: id
+
+  - name: Retrieve the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        organised_by:
+          title: Veloware CC

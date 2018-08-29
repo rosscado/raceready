@@ -86,7 +86,8 @@ an_event = api.model('Event', {
 	'url': fields.String(description='The primary URL promoting the event', example='http://www.banbridgecc.com/thebeggs18/'),
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
 	'type': fields.String(required=True,description='The type of event. Is a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race', example='road race'),
-	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally')
+	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
+	'organised_by': fields.Nested(a_club, description='Club hosting the event')
 	})
 
 data_store = TransientModel()
