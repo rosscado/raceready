@@ -5,14 +5,16 @@ from context import app # check sys.path if this fails
 arbitrary_title='Unit test club' # default club fixture title
 arbitrary_url='http://www.clontarfcc.com/' # default club fixture url
 
-# test fixture generator functions, called by test cases as needed
 @pytest.fixture
-def resource_fixture(client):
-	'''Create and return a club for use in test cases
-	Assumes that the `test_post_clubs` testcase passes'''
-	club = {'title': arbitrary_title, 'url': arbitrary_url}
-	post_rv = client.post('/api/clubs/', json=club)
-	return post_rv.get_json()
+def resource_name():
+	return 'clubs'
+
+@pytest.fixture
+def resource_data():
+	return {
+		'title': arbitrary_title,
+		'url': arbitrary_url
+	}
 
 def _get_resource_fixture(client, id):
 	'''Return a club for use in test cases
@@ -28,25 +30,11 @@ def _get_resource_fixture(client, id):
 class TestClubs(ResourceTestCase):
 	ns = '/api/clubs/'
 
-	def test_post_clubs(self, client):
-		'''Test POST /clubs API for club creation'''
-		resource_fixture = {
-			'title': arbitrary_title,
-			'url': arbitrary_url
-		}
-
-		self._test_post_resource(client, resource_fixture)
-
 	def test_post_clubs_required_fields(self, client):
 		'''Test POST /clubs API for club creation when missing required fields'''
 		resource_fixture = {'title': arbitrary_title}
 
 		self._test_post_resource_required_fields(client, resource_fixture)
-
-	def test_put_club_not_found(self, client):
-		"""Test PUT /clubs/{id} API with a non-existent {id}"""
-		no_such_resource_fixture = {'title': 'foo bar'}
-		self._test_put_resource_not_found(client, no_such_resource_fixture)
 
 	def test_put_club_required_fields(self, client, resource_fixture):
 		"""Test PUT /clubs/{id} API for club modification when required fields are missing"""

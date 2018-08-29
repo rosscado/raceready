@@ -34,13 +34,13 @@ class ResourceTestCase:
 		resources_result = get_rv.get_json()
 		assert resources_result # assert that list is not None or empty
 
-	def _test_post_resource(self, client, resource_fixture):
-		post_rv = client.post(self.ns, json=resource_fixture)
+	def test_post_resource(self, client, resource_data):
+		post_rv = client.post(self.ns, json=resource_data)
 		assert post_rv.status_code == 201
 		resource_result = post_rv.get_json()
 		assert resource_result is not None
-		for property in resource_fixture:
-			assert resource_result[property] == resource_fixture[property]
+		for field in resource_data:
+			assert resource_result[field] == resource_data[field]
 
 	def _test_post_resource_required_fields(self, client, resource_fixture):
 		'''Given a resource fixture containing *only required fields*
@@ -82,7 +82,7 @@ class ResourceTestCase:
 		for property in resource_fixture:
 			assert resource_result[property] == resource_fixture[property]
 
-	def _test_put_resource_not_found(self, client, resource_fixture):
+	def test_put_resource_not_found(self, client, resource_fixture):
 		put_rv = client.put('{ns}{id}'.format(ns=self.ns,id=self.non_existent_resource_id), json=resource_fixture)
 		assert put_rv.status_code == 404
 
