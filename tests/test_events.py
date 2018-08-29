@@ -51,3 +51,19 @@ class TestEvents(ResourceTestCase):
 		assert 'status' not in resource_fixture # test has default status
 		event_status = {'state': 'cancelled', 'url': 'http://sorryaboutthat.com/notice'}
 		self._test_put_resource_field(client, resource_fixture, ('status', event_status))
+
+	def test_put_event_stages(self, client, resource_fixture):
+		"""Test PUT /events/{id} API for event stage list"""
+		event_stage = {
+			'distance_km': 100,
+			'start_time': '1970-01-01 12:00',
+			'stage_type': 'road race'}
+		self._test_put_resource_field(client, resource_fixture, ('stages', [event_stage]))
+
+	def test_post_event_invalid_stages(self, client, resource_data):
+		"""Test POST /events/{id} API for invalid event stage data"""
+		event_stage = {
+			'distance_km': 'one hundred',
+			'start_time': '9pm',
+			'stage_type': 'tricycle race'}
+		self._test_post_resource_invalid_field(client, resource_data, {'stages': [event_stage]})

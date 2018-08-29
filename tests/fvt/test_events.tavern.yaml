@@ -59,6 +59,23 @@ stages:
     response:
       status_code: 204
 
+  - name: Add a stage
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Mondello GP
+        date: "1970-01-02"
+        event_type: criterium
+        stages:
+          - distance_km: 50
+            start_time: 1970-01-01 19:30
+            stage_type: criterium
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
   - name: Cancel the event
     request:
       url: "{api.server}/api/events/{event_fixture_id}"
