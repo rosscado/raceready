@@ -25,7 +25,7 @@ stages:
       json:
         title: Lifecycle test event
         date: "1970-01-01"
-        type: road race
+        event_type: road race
       method: POST
       headers:
         content-type: application/json
@@ -52,7 +52,7 @@ stages:
       json:
         title: Lifecycle test event updated
         date: "1970-01-02"
-        type: criterium
+        event_type: criterium
       method: PUT
       headers:
         content-type: application/json
@@ -65,7 +65,7 @@ stages:
       json:
         title: Lifecycle test event cancelled
         date: "1970-01-02"
-        type: road race
+        event_type: road race
         status:
           state: cancelled
       method: PUT
@@ -106,7 +106,7 @@ stages:
       json:
         title: Club test event
         date: "1970-01-01"
-        type: road race
+        event_type: road race
         organised_by:
           title: Veloware CC
           url: http://www.veloware.cc/

@@ -4,7 +4,7 @@ from context import app # check sys.path if this fails
 
 arbitrary_title='Unit test event' # default event fixture title
 arbitrary_date='1970-01-01' # a date to use when the date doesn't matter (UNIX epoch)
-arbitrary_type='road race' # default event fixture type
+arbitrary_event_type='road race' # default event fixture type
 
 
 @pytest.fixture
@@ -18,12 +18,12 @@ def resource_data():
 		'date': '2018-08-11',
 		'url': 'https://goo.gl/tVymnx',
 		'location': 'Dromore, Co. Down',
-		'type': 'road race'
+		'event_type': 'road race'
 	}
 
 @pytest.fixture
 def required_fields():
-	return ['title', 'date', 'type']
+	return ['title', 'date', 'event_type']
 
 # test case functions
 def test_swagger(client):
@@ -41,10 +41,10 @@ class TestEvents(ResourceTestCase):
 		self._test_post_resource_invalid_field(client, resource_data, {'date': '2018/08/11'})
 		self._test_post_resource_invalid_field(client, resource_data, {'date': '11-08-2018'})
 
-	def test_post_events_invalid_type(self, client, resource_data):
-		'''Test POST /events API for event creation when type field is note a recognised value'''
-		self._test_post_resource_invalid_field(client, resource_data, {'type': 'foo bar'})
-		self._test_post_resource_invalid_field(client, resource_data, {'type': 'race'})
+	def test_post_events_invalid_event_type(self, client, resource_data):
+		'''Test POST /events API for event creation when event_type field is note a recognised value'''
+		self._test_post_resource_invalid_field(client, resource_data, {'event_type': 'foo bar'})
+		self._test_post_resource_invalid_field(client, resource_data, {'event_type': 'race'})
 
 	def test_put_event_status(self, client, resource_fixture):
 		"""Test PUT /events/{id} API for event status modification"""
