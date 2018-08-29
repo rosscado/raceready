@@ -16,6 +16,10 @@ def resource_data():
 		'url': arbitrary_url
 	}
 
+@pytest.fixture
+def required_fields():
+	return ['title']
+
 def _get_resource_fixture(client, id):
 	'''Return a club for use in test cases
 	Assumes that the `test_get_club` testcase passes
@@ -28,17 +32,4 @@ def _get_resource_fixture(client, id):
 		return get_rv.get_json()
 
 class TestClubs(ResourceTestCase):
-	ns = '/api/clubs/'
-
-	def test_post_clubs_required_fields(self, client):
-		'''Test POST /clubs API for club creation when missing required fields'''
-		resource_fixture = {'title': arbitrary_title}
-
-		self._test_post_resource_required_fields(client, resource_fixture)
-
-	def test_put_club_required_fields(self, client, resource_fixture):
-		"""Test PUT /clubs/{id} API for club modification when required fields are missing"""
-		resource_fixture_min = {
-			'title': resource_fixture['title']
-			}
-		self._test_put_resource_required_fields(client, resource_fixture['id'], resource_fixture_min)
+	ns = '/api/{resources}/'.format(resources=resource_name())

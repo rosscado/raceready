@@ -42,14 +42,13 @@ class ResourceTestCase:
 		for field in resource_data:
 			assert resource_result[field] == resource_data[field]
 
-	def _test_post_resource_required_fields(self, client, resource_fixture):
-		'''Given a resource fixture containing *only required fields*
+	def test_post_resource_required_fields(self, client, resource_data, required_fields):
+		'''Given a resource fixture input payload
 		test that the API will reject requests to create the resource
 		if any of those fields are missing'''
-
-		for field in list(resource_fixture.keys()): # use list(keys()) to avoid concurrent modification
-			del resource_fixture[field]
-			post_rv = client.post(self.ns, json=resource_fixture)
+		for field in required_fields:
+			del resource_data[field]
+			post_rv = client.post(self.ns, json=resource_data)
 			assert post_rv.status_code == 400
 
 	def _test_post_resource_invalid_field(self, client, resource_fixture, invalid_field):
@@ -86,14 +85,13 @@ class ResourceTestCase:
 		put_rv = client.put('{ns}{id}'.format(ns=self.ns,id=self.non_existent_resource_id), json=resource_fixture)
 		assert put_rv.status_code == 404
 
-	def _test_put_resource_required_fields(self, client, resource_fixture_id, resource_fixture):
-		'''Given an existing resource fixture (and its id) containing *only required fields*
+	def test_put_resource_required_fields(self, client, resource_fixture, required_fields):
+		'''Given an existing resource fixture
 		test that the API will reject requests to update the resource
 		if any of those fields are missing'''
-
-		for field in list(resource_fixture.keys()): # use list(keys()) to avoid concurrent modification
+		for field in required_fields:
 			del resource_fixture[field]
-			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture_id), json=resource_fixture)
+			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture['id']), json=resource_fixture)
 			assert post_rv.status_code == 400
 
 	def test_delete_resource(self, client, resource_fixture):

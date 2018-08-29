@@ -21,6 +21,10 @@ def resource_data():
 		'type': 'road race'
 	}
 
+@pytest.fixture
+def required_fields():
+	return ['title', 'date', 'type']
+
 # test case functions
 def test_swagger(client):
 	"""Test application root hosts swagger docs"""
@@ -29,18 +33,7 @@ def test_swagger(client):
 
 
 class TestEvents(ResourceTestCase):
-
-	# namespace must be declared as a class variable
-	# rather than an instance variable because pytest classes
-	# can't have __init__ functions
-	# https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
-	ns = '/api/events/'
-
-	def test_post_events_required_fields(self, client):
-		'''Test POST /events API for event creation when missing required fields'''
-		resource_fixture = {'title': arbitrary_title, 'date': arbitrary_date, 'type': arbitrary_type}
-
-		self._test_post_resource_required_fields(client, resource_fixture)
+	ns = '/api/{resources}/'.format(resources=resource_name())
 
 	def test_post_events_invalid_date(self, client, resource_data):
 		'''Test POST /events API for event creation when date field is not ISO format'''
@@ -52,15 +45,6 @@ class TestEvents(ResourceTestCase):
 		'''Test POST /events API for event creation when type field is note a recognised value'''
 		self._test_post_resource_invalid_field(client, resource_data, {'type': 'foo bar'})
 		self._test_post_resource_invalid_field(client, resource_data, {'type': 'race'})
-
-	def test_put_event_required_fields(self, client, resource_fixture):
-		"""Test PUT /events/{id} API for event modification when required fields are missing"""
-		resource_fixture_min = {
-			'title': resource_fixture['title'],
-			'date': resource_fixture['date'],
-			'type': resource_fixture['type']
-			}
-		self._test_put_resource_required_fields(client, resource_fixture['id'], resource_fixture_min)
 
 	def test_put_event_status(self, client, resource_fixture):
 		"""Test PUT /events/{id} API for event status modification"""

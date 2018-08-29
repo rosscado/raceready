@@ -32,6 +32,13 @@ def resource_data():
 	raise NotImplementedError("Override resource_data function to return a dict for your resource, e.g. {'title': 'foo bar'}")
 
 @pytest.fixture
+def required_fields():
+	'''A list of the fieldnames required by the resource's data model
+	Developers must override this abstract function in their own test module(s)
+	to generate test fixtures for their resource type(s).'''
+	raise NotImplementedError("Override required_fields function to return a list of required fields for your resource, e.g. ['title']")
+
+@pytest.fixture
 def resource_fixture(client, resource_name, resource_data):
 	'''POST a resource for use in test cases and return its JSON object
 	Assumes that the `test_post_{resource}` testcase passes
