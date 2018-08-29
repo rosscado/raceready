@@ -5,14 +5,6 @@ from context import app # check sys.path if this fails
 arbitrary_title='Unit test club' # default club fixture title
 arbitrary_url='http://www.clontarfcc.com/' # default club fixture url
 
-@pytest.fixture
-def client():
-	app.app.config['TESTING'] = True
-	app.app.config['DATABASE'] = 'unittests'
-	client = app.app.test_client()
-
-	yield client
-
 # test fixture generator functions, called by test cases as needed
 @pytest.fixture
 def club_fixture(client):

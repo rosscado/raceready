@@ -7,16 +7,6 @@ arbitrary_date='1970-01-01' # a date to use when the date doesn't matter (UNIX e
 arbitrary_type='road race' # default event fixture type
 
 @pytest.fixture
-def client():
-	'''A werkzeug.test.Client exposed by the Flask app for making HTTP requests
-	to the application's REST API endpoints'''
-	app.app.config['TESTING'] = True
-	app.app.config['DATABASE'] = 'unittests'
-	client = app.app.test_client()
-
-	yield client
-
-@pytest.fixture
 def event_fixture(client):
 	'''POST an event for use in test cases and return its JSON object
 	Assumes that the `test_post_events` testcase passes'''
