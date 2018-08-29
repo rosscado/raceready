@@ -70,6 +70,10 @@ stages:
           - distance_km: 50
             start_time: 1970-01-01 19:30
             stage_type: criterium
+            sign_on:
+              location: Mondello Park, Co. Kildare
+              start_time: 1970-01-01 18:45
+              end_time: 1970-01-01 19:15
       method: PUT
       headers:
         content-type: application/json

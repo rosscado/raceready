@@ -75,15 +75,22 @@ event_status = api.model('Status', {
 
 a_club = api.model('Club', {
 	'id': fields.Integer(description='The unique identifier of a club (internal)', readonly=True),
-	'title': fields.String(required=True, description='The full name of the club', example='Clontarf Cycling Club'),
-	'url': fields.String(description="The club's primary web address", example='http://www.clontarfcycling.com/')
-	})
+	'title': fields.String(required=True, description='The full name of the club', example='Banbridge Cycling Club'),
+	'url': fields.String(description="The club's primary web address", example='http://www.banbridgecc.com/')
+})
+
+a_sign_on = api.model('Sign On', {
+	'location': fields.String(description='Where is the sign on?', example='Primary School, Donore, Co. Down'),
+	'start_time': fields.DateTime(description='When does sign on open? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 11:00'),
+	'end_time': fields.DateTime(description='When does sign on close? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 12:30'),
+})
 
 a_stage = api.model('Stage', {
-	'distance_km': fields.Integer(description='The length of the stage in kilometres', example='80'),
-	'stage_type': fields.String(required=True, description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race', example='road race'),
-	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00')
-	})
+	'distance_km': fields.Integer(description='The length of the stage in kilometres', example=80),
+	'stage_type': fields.String(required=True, description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
+	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
+	'sign_on': fields.Nested(a_sign_on, description='When and where is the sign on?')
+})
 
 an_event = api.model('Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
@@ -91,10 +98,10 @@ an_event = api.model('Event', {
 	'date': fields.Date(required=True,description='When will the event take place? ISO 8601 format: YYYY-MM-DD', example='2018-08-11'),
 	'url': fields.String(description='The primary URL promoting the event', example='http://www.banbridgecc.com/thebeggs18/'),
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
-	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race', example='road race'),
+	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race'),
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
 	'organised_by': fields.Nested(a_club, description='Club hosting the event'),
 	'stages': fields.List(fields.Nested(a_stage, description='The stage list. One-day events have a single stage.'))
-	})
+})
 
 data_store = TransientModel()
