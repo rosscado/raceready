@@ -28,28 +28,27 @@ class ResourceTestCase:
 		assert resources_result is not None
 		assert_list(resources_result)
 
-	def _test_get_resources_not_empty(self, client, resource_fixture):
+	def test_get_resources_not_empty(self, client, resource_fixture):
 		"""Test GET /namespace API for resource listing when resources do exist"""
 		get_rv = client.get(self.ns)
 		resources_result = get_rv.get_json()
 		assert resources_result # assert that list is not None or empty
 
-	def _test_post_resource(self, client, resource_fixture):
-		post_rv = client.post(self.ns, json=resource_fixture)
+	def test_post_resource(self, client, resource_data):
+		post_rv = client.post(self.ns, json=resource_data)
 		assert post_rv.status_code == 201
 		resource_result = post_rv.get_json()
 		assert resource_result is not None
-		for property in resource_fixture:
-			assert resource_result[property] == resource_fixture[property]
+		for field in resource_data:
+			assert resource_result[field] == resource_data[field]
 
-	def _test_post_resource_required_fields(self, client, resource_fixture):
-		'''Given a resource fixture containing *only required fields*
+	def test_post_resource_required_fields(self, client, resource_data, required_fields):
+		'''Given a resource fixture input payload
 		test that the API will reject requests to create the resource
 		if any of those fields are missing'''
-
-		for field in list(resource_fixture.keys()): # use list(keys()) to avoid concurrent modification
-			del resource_fixture[field]
-			post_rv = client.post(self.ns, json=resource_fixture)
+		for field in required_fields:
+			del resource_data[field]
+			post_rv = client.post(self.ns, json=resource_data)
 			assert post_rv.status_code == 400
 
 	def _test_post_resource_invalid_field(self, client, resource_fixture, invalid_field):
@@ -61,7 +60,7 @@ class ResourceTestCase:
 		post_rv = client.post(self.ns, json=resource_fixture)
 		assert post_rv.status_code == 400
 
-	def _test_get_resource(self, client, resource_fixture):
+	def test_get_resource(self, client, resource_fixture):
 		"""Test GET /{resource}/{id} API"""
 		get_rv = client.get('{namespace}{id}'.format(namespace=self.ns, id=resource_fixture['id']))
 		assert get_rv.status_code == 200
@@ -75,28 +74,27 @@ class ResourceTestCase:
 		get_rv = client.get('{namespace}{id}'.format(namespace=self.ns, id=self.non_existent_resource_id))
 		assert get_rv.status_code == 404
 
-	def _test_put_resource(self, client, resource_fixture):
+	def test_put_resource(self, client, resource_fixture):
 		put_rv = client.put('{namespace}{id}'.format(namespace=self.ns, id=resource_fixture['id']), json=resource_fixture)
 		assert put_rv.status_code == 204
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
 		for property in resource_fixture:
 			assert resource_result[property] == resource_fixture[property]
 
-	def _test_put_resource_not_found(self, client, resource_fixture):
+	def test_put_resource_not_found(self, client, resource_fixture):
 		put_rv = client.put('{ns}{id}'.format(ns=self.ns,id=self.non_existent_resource_id), json=resource_fixture)
 		assert put_rv.status_code == 404
 
-	def _test_put_resource_required_fields(self, client, resource_fixture_id, resource_fixture):
-		'''Given an existing resource fixture (and its id) containing *only required fields*
+	def test_put_resource_required_fields(self, client, resource_fixture, required_fields):
+		'''Given an existing resource fixture
 		test that the API will reject requests to update the resource
 		if any of those fields are missing'''
-
-		for field in list(resource_fixture.keys()): # use list(keys()) to avoid concurrent modification
+		for field in required_fields:
 			del resource_fixture[field]
-			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture_id), json=resource_fixture)
+			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture['id']), json=resource_fixture)
 			assert post_rv.status_code == 400
 
-	def _test_delete_resource(self, client, resource_fixture):
+	def test_delete_resource(self, client, resource_fixture):
 		delete_rv = client.delete('{ns}{id}'.format(ns=self.ns,id=resource_fixture['id']))
 		assert delete_rv.status_code == 204
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
