@@ -80,27 +80,6 @@ stages:
     response:
       status_code: 204
 
-  - name: Invalid sign on
-    request:
-      url: "{api.server}/api/events/{event_fixture_id}"
-      json:
-        title: Mondello GP
-        date: "1970-01-02"
-        event_type: criterium
-        stages:
-          - distance_km: 50
-            start_time: 1970-01-01 19:30
-            stage_type: criterium
-            sign_on:
-              location: Mondello Park, Co. Kildare
-              start_time: foo bar
-              end_time: 1970-01-01 19:15
-      method: PUT
-      headers:
-        content-type: application/json
-    response:
-      status_code: 400
-
   - name: Cancel the event
     request:
       url: "{api.server}/api/events/{event_fixture_id}"
