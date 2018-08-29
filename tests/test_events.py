@@ -32,10 +32,6 @@ class TestEvents(ResourceTestCase):
 	# https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 	ns = '/api/events/'
 
-	def test_get_events_not_empty(self, client, resource_fixture):
-		"""Test GET /events API for events listing when events do exist"""
-		self._test_get_resources_not_empty(client, resource_fixture)
-
 	def test_post_events(self, client):
 		'''Test POST /events API for event creation'''
 		resource_fixture = {
@@ -69,16 +65,6 @@ class TestEvents(ResourceTestCase):
 		self._test_post_resource_invalid_field(client, resource_fixture, {'type': 'foo bar'})
 		self._test_post_resource_invalid_field(client, resource_fixture, {'type': 'race'})
 
-	def test_get_event(self, client, resource_fixture):
-		"""Test GET /events/{id} API"""
-		self._test_get_resource(client, resource_fixture)
-
-	def test_put_event(self, client, resource_fixture):
-		"""Test PUT /events/{id} API for event modification"""
-		resource_fixture['title'] = "{original} modified".format(original=resource_fixture['title'])
-
-		self._test_put_resource(client, resource_fixture)
-
 	def test_put_event_not_found(self, client):
 		"""Test PUT /events/{id} API with a non-existent {id}"""
 		no_such_resource_fixture = {'title': arbitrary_title, 'date': arbitrary_date, 'type': arbitrary_type}
@@ -92,10 +78,6 @@ class TestEvents(ResourceTestCase):
 			'type': resource_fixture['type']
 			}
 		self._test_put_resource_required_fields(client, resource_fixture['id'], resource_fixture_min)
-
-	def test_delete_event(self, client, resource_fixture):
-		"""Test DELETE /events/{id} API for event deletion"""
-		self._test_delete_resource(client, resource_fixture)
 
 	def test_put_event_status(self, client, resource_fixture):
 		"""Test PUT /events/{id} API for event status modification"""

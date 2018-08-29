@@ -28,10 +28,6 @@ def _get_resource_fixture(client, id):
 class TestClubs(ResourceTestCase):
 	ns = '/api/clubs/'
 
-	def test_get_clubs_not_empty(self, client, resource_fixture):
-		"""Test GET /clubs API for clubs listing when clubs do exist"""
-		self._test_get_resources_not_empty(client, resource_fixture)
-
 	def test_post_clubs(self, client):
 		'''Test POST /clubs API for club creation'''
 		resource_fixture = {
@@ -47,15 +43,6 @@ class TestClubs(ResourceTestCase):
 
 		self._test_post_resource_required_fields(client, resource_fixture)
 
-	def test_get_club(self, client, resource_fixture):
-		"""Test GET /clubs/{id} API"""
-		self._test_get_resource(client, resource_fixture)
-
-	def test_put_club(self, client, resource_fixture):
-		"""Test PUT /clubs/{id} API for club modification"""
-		resource_fixture['title'] = "{original} modified".format(original=resource_fixture['title'])
-		self._test_put_resource(client, resource_fixture)
-
 	def test_put_club_not_found(self, client):
 		"""Test PUT /clubs/{id} API with a non-existent {id}"""
 		no_such_resource_fixture = {'title': 'foo bar'}
@@ -67,7 +54,3 @@ class TestClubs(ResourceTestCase):
 			'title': resource_fixture['title']
 			}
 		self._test_put_resource_required_fields(client, resource_fixture['id'], resource_fixture_min)
-
-	def test_delete_club(self, client, resource_fixture):
-		"""Test DELETE /clubs/{id} API for club deletion"""
-		self._test_delete_resource(client, resource_fixture)

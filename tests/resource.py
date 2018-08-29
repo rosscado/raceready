@@ -28,7 +28,7 @@ class ResourceTestCase:
 		assert resources_result is not None
 		assert_list(resources_result)
 
-	def _test_get_resources_not_empty(self, client, resource_fixture):
+	def test_get_resources_not_empty(self, client, resource_fixture):
 		"""Test GET /namespace API for resource listing when resources do exist"""
 		get_rv = client.get(self.ns)
 		resources_result = get_rv.get_json()
@@ -61,7 +61,7 @@ class ResourceTestCase:
 		post_rv = client.post(self.ns, json=resource_fixture)
 		assert post_rv.status_code == 400
 
-	def _test_get_resource(self, client, resource_fixture):
+	def test_get_resource(self, client, resource_fixture):
 		"""Test GET /{resource}/{id} API"""
 		get_rv = client.get('{namespace}{id}'.format(namespace=self.ns, id=resource_fixture['id']))
 		assert get_rv.status_code == 200
@@ -75,7 +75,7 @@ class ResourceTestCase:
 		get_rv = client.get('{namespace}{id}'.format(namespace=self.ns, id=self.non_existent_resource_id))
 		assert get_rv.status_code == 404
 
-	def _test_put_resource(self, client, resource_fixture):
+	def test_put_resource(self, client, resource_fixture):
 		put_rv = client.put('{namespace}{id}'.format(namespace=self.ns, id=resource_fixture['id']), json=resource_fixture)
 		assert put_rv.status_code == 204
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
@@ -96,7 +96,7 @@ class ResourceTestCase:
 			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture_id), json=resource_fixture)
 			assert post_rv.status_code == 400
 
-	def _test_delete_resource(self, client, resource_fixture):
+	def test_delete_resource(self, client, resource_fixture):
 		delete_rv = client.delete('{ns}{id}'.format(ns=self.ns,id=resource_fixture['id']))
 		assert delete_rv.status_code == 204
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
