@@ -89,10 +89,9 @@ a_stage = api.model('Stage', {
 	'distance_km': fields.Integer(description='The length of the stage in kilometres', example=80),
 	'stage_type': fields.String(required=True, description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
 	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
-	'sign_on': fields.Nested(a_sign_on, description='When and where is the sign on?')
 })
 
-an_event = api.model('Event', {
+an_event = api.model('Base Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
 	'title': fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial'),
 	'date': fields.Date(required=True,description='When will the event take place? ISO 8601 format: YYYY-MM-DD', example='2018-08-11'),
@@ -102,6 +101,20 @@ an_event = api.model('Event', {
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
 	'organised_by': fields.Nested(a_club, description='Club hosting the event'),
 	'stages': fields.List(fields.Nested(a_stage, description='The stage list. One-day events have a single stage.'))
+})
+
+one_day_event = api.inherit('One Day Event', an_event, {
+	'sign_on': fields.Nested(a_sign_on, description='When and where is the sign on?'),
+	'races': fields.List(fields.Nested(a_stage, description='Races taking place at the event'))
+})
+
+each_day = api.model('Day', {
+	'sign_on': fields.Nested(a_sign_on, description="Today's sign on"),
+	'stages': fields.List(fields.Nested(a_stage, description="Today's stages"))
+})
+
+multi_day_event = api.inherit('Multi Day Event', an_event, {
+	'days': fields.List(fields.Nested(each_day))
 })
 
 data_store = TransientModel()

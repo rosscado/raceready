@@ -25,6 +25,28 @@ def resource_data():
 def required_fields():
 	return ['title', 'date', 'event_type']
 
+@pytest.fixture
+def signon_data():
+	return {
+		'venue': 'GAA club, Dromore, Co. Down',
+		'start_time': '2018-08-11 09:30',
+		'end_time': '2018-08-11 11:30'
+	}
+
+@pytest.fixture
+def category_data():
+	return {'id': 'A1'}
+
+@pytest.fixture
+def stage_data(category_data):
+	return {
+		'distance_km': 96,
+		'start_time': '2018-08-11 12:00',
+		'stage_type': 'road race',
+		'eligible_categories': [category_data['id']],
+		'title': 'headline race'
+	}
+
 # test case functions
 def test_swagger(client):
 	"""Test application root hosts swagger docs"""
@@ -52,18 +74,23 @@ class TestEvents(ResourceTestCase):
 		event_status = {'state': 'cancelled', 'url': 'http://sorryaboutthat.com/notice'}
 		self._test_put_resource_field(client, resource_fixture, ('status', event_status))
 
-	def test_put_event_stages(self, client, resource_fixture):
-		"""Test PUT /events/{id} API for event stage list"""
-		event_stage = {
-			'distance_km': 100,
-			'start_time': '1970-01-01 12:00',
-			'stage_type': 'road race'}
-		self._test_put_resource_field(client, resource_fixture, ('stages', [event_stage]))
+class TestOneDayEvents(TestEvents):
 
-	def test_post_event_invalid_stages(self, client, resource_data):
+	def test_post_one_day_event(self, client, resource_data, signon_data, stage_data):
+		'''Test POST /events/ API for a OneDayEvent'''
+		resource_data['sign_on'] = signon_data
+		resource_data['races'] = [stage_data]
+		self.test_post_resource(client, resource_data)
+
+	def _test_post_invalid_one_day_event(self, client, resource_data, stage_data):
 		"""Test POST /events/{id} API for invalid event stage data"""
-		event_stage = {
-			'distance_km': 'one hundred',
-			'start_time': '9pm',
-			'stage_type': 'tricycle race'}
-		self._test_post_resource_invalid_field(client, resource_data, {'stages': [event_stage]})
+		stage_data['stage_type'] = 'tricycle race'
+		self._test_post_resource_invalid_field(client, resource_data, {'races': [stage_data]})
+
+	def test_add_race(self, client, resource_fixture, stage_data):
+		"""Test PUT /events/{id} API for adding a race to an event that doesn't yet have any races"""
+		races = []
+		stage_data['eligible_categories'] = ['A3']
+		stage_data['title'] = 'A3 race'
+		races.append(stage_data)
+		self._test_put_resource_field(client, resource_fixture, ('races', races))

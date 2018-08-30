@@ -151,3 +151,102 @@ stages:
       body:
         organised_by:
           title: Veloware CC
+
+  - name: Delete the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204
+---
+test_name: One Day Event
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create a one-day event
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: One Day Event
+        date: "1970-01-01"
+        event_type: road race
+        races:
+          - title: Headline Race
+            distance_km: 120
+            eligible_categories:
+              - A1
+              - A2
+          - title: Undercard Race
+            distance_km: 80
+            eligible_categories:
+              - A3
+              - J
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_fixture_id: id
+
+  - name: Delete the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204
+
+---
+test_name: Multi Day Event
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create a multi-day stage race
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: Two Day A4 Stage Race
+        date: "1970-01-01"
+        event_type: stage race
+        days:
+          - sign_on:
+              venue: HQ
+            stages:
+              - title: Stage One
+                distance_km: 60
+                stage_type: road race
+                eligible_categories:
+                  - A4
+              - title: Stage Two
+                distance_km: 5
+                stage_type: time trial
+                eligible_categories:
+                  - A4
+          - sign_on:
+              venue: HQ
+            stages:
+              - title: Stage Three
+                distance_km: 60
+                stage_type: road race
+                eligible_categories:
+                  - A4
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_fixture_id: id
+
+  - name: Delete the event
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204
