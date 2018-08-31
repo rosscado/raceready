@@ -66,6 +66,7 @@ stages:
               - A2
             stage_type: road race
             handicapped: false
+            start_time: "2018-09-01 11:00"
             course:
               laps: 1
               circuit_id: {circuit_id}
@@ -73,6 +74,7 @@ stages:
             eligible_categories:
               - W
             stage_type: road race
+            start_time: "2018-09-01 11:00"
             course:
               laps: 1
               circuit_id: {circuit_id}
@@ -82,6 +84,7 @@ stages:
               - J
             stage_type: road race
             handicapped: false
+            start_time: "2018-09-01 11:00"
             course:
               laps: 1
               circuit_id: {circuit_id}
