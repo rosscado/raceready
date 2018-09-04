@@ -1,0 +1,42 @@
+---
+test_name: Circuits lifecycle
+
+includes:
+  - !include config.yaml
+
+stages:
+  - name: Create a circuit
+    request:
+      url: "{api.server}/api/circuits/"
+      json:
+        title: Jungle Loop Anti-clockwise
+        url: https://www.strava.com/segments/16848061
+        distance_km: 7.85
+        elevation_gain_m: 65
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          circuit_fixture_id: id
+
+  - name: Retrieve the circuit
+    request:
+      url: "{api.server}/api/circuits/{circuit_fixture_id}"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        id: !anything
+        flatness_index: !anything
+
+  - name: Delete the circuit
+    request:
+      url: "{api.server}/api/circuits/{circuit_fixture_id}"
+      method: DELETE
+    response:
+      status_code: 204

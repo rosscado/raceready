@@ -10,6 +10,7 @@ class TransientModel:
 	def __init__(self):
 		self.events = []
 		self.clubs = []
+		self.circuits = []
 
 	# event related functions
 	def get_events(self):
@@ -57,6 +58,32 @@ class TransientModel:
 	def delete_club(self, id):
 		del self.clubs[id-1]
 
+	# circuit related functions
+	def get_circuits(self):
+		return self.circuits
+
+	def create_circuit(self, payload):
+		#doc = db_client.create_document(api.payload)
+		self.circuits.append(payload)
+		doc = payload
+		doc['id'] = len(self.circuits)
+		return doc
+
+	def get_circuit(self, id):
+		if 0 < id <= len(self.circuits):
+			c = self.circuits[id-1]
+			if 'distance_km' in c and 'elevation_gain_m' in c and 'flatness_index' not in c:
+				c['flatness_index'] = c['distance_km']/c['elevation_gain_m']
+			return c
+		else:
+			return None
+
+	def update_circuit(self, id, payload):
+		self.circuits[id-1] = payload
+
+	def delete_circuit(self, id):
+		del self.circuits[id-1]
+
 from database.clients import get_db
 from cloudant.result import Result
 class PeristentModel:
@@ -79,6 +106,14 @@ a_club = api.model('Club', {
 	'url': fields.String(description="The club's primary web address", example='http://www.banbridgecc.com/')
 })
 
+a_circuit = api.model('Circuit', {
+	'id': fields.Integer(description='The unique identifier of a circuit (internal)', readonly=True),
+	'url': fields.String(description="The route or segment on a route mapping service", example='https://www.strava.com/segments/16848061'),
+	'distance_km': fields.Float(description='The length in kilometres of one lap of the circuit', example=7.85),
+	'elevation_gain_m': fields.Integer(description='The total elevation gain (ascent) in metres over one lap of the circuit', example=65),
+	'flatness_index': fields.Float(description='indicates how close to flat is the circuit', example='0.12', readonly=True)
+})
+
 a_sign_on = api.model('Sign On', {
 	'location': fields.String(description='Where is the sign on?', example='Primary School, Donore, Co. Down'),
 	'start_time': fields.DateTime(description='When does sign on open? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 11:00'),
@@ -86,7 +121,7 @@ a_sign_on = api.model('Sign On', {
 })
 
 a_stage = api.model('Stage', {
-	'distance_km': fields.Integer(description='The length of the stage in kilometres', example=80),
+	'distance_km': fields.Float(description='The length of the stage in kilometres', example=80),
 	'stage_type': fields.String(required=True, description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
 	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
 })
