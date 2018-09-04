@@ -96,7 +96,7 @@ class PeristentModel:
 		return [event for event in all_events]
 
 event_status = api.model('Status', {
-	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'completed'], default='scheduled', example='scheduled'),
+	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'confirmed', 'completed'], default='scheduled', example='scheduled'),
 	'url': fields.String(description='The primary URL where notice of the most recent state change was posted', example='http://www.banbridgecc.com/eventcancellation/')
 })
 
