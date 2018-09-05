@@ -126,6 +126,17 @@ a_stage = api.model('Stage', {
 	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
 })
 
+a_contact = api.model('Contact', {
+	'name': fields.String(description='Name of a person who can be contacted about the event', example='Christian Schmitz'),
+	'email': fields.String(description="Email address at which the contact can be reached", example='asotv@aso.fr'),
+	'phone': fields.String(description='Phone number at which the contact can be reached', example='555 593 9323')
+})
+
+organisers = api.model('Organisers', {
+	'club': fields.Nested(a_club, description='Club hosting the event'),
+	'contacts': fields.List(fields.Nested(a_contact, description='A list of persons to contact about the event'))
+})
+
 an_event = api.model('Base Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
 	'title': fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial'),
@@ -134,7 +145,7 @@ an_event = api.model('Base Event', {
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
 	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race'),
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
-	'organised_by': fields.Nested(a_club, description='Club hosting the event'),
+	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event'),
 	'stages': fields.List(fields.Nested(a_stage, description='The stage list. One-day events have a single stage.'))
 })
 

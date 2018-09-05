@@ -120,8 +120,9 @@ stages:
         date: "1970-01-01"
         event_type: road race
         organised_by:
-          title: Veloware CC
-          url: http://www.veloware.cc/
+          club:
+            title: Veloware CC
+            url: http://www.veloware.cc/
       method: POST
       headers:
         content-type: application/json
@@ -141,7 +142,8 @@ stages:
       status_code: 200
       body:
         organised_by:
-          title: Veloware CC
+          club:
+            title: Veloware CC
 
   - name: Delete the event
     request:
