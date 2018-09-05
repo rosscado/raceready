@@ -59,7 +59,14 @@ class TransientModel:
 		del self.clubs[id-1]
 
 	# circuit related functions
+	def _add_flatness_index(self, c):
+		'''Compute the flatness_index and add to circuit object c if not already present'''
+		if 'distance_km' in c and 'elevation_gain_m' in c and 'flatness_index' not in c:
+			c['flatness_index'] = c['distance_km']/c['elevation_gain_m']
+
 	def get_circuits(self):
+		for circuit in self.circuits:
+			self._add_flatness_index(circuit)
 		return self.circuits
 
 	def create_circuit(self, payload):
@@ -72,8 +79,7 @@ class TransientModel:
 	def get_circuit(self, id):
 		if 0 < id <= len(self.circuits):
 			c = self.circuits[id-1]
-			if 'distance_km' in c and 'elevation_gain_m' in c and 'flatness_index' not in c:
-				c['flatness_index'] = c['distance_km']/c['elevation_gain_m']
+			self._add_flatness_index(c)
 			return c
 		else:
 			return None

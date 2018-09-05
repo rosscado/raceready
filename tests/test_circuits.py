@@ -26,3 +26,9 @@ def required_fields():
 class TestCircuits(ResourceTestCase):
 	# must declare ns fixture in this module to override dependent fixtures
 	ns = '/api/{resources}/'.format(resources=resource_name())
+
+	def test_has_flatness_index(self, client, resource_fixture):
+		get_rv = client.get(self.ns)
+		circuits = get_rv.get_json()
+		for circuit in circuits:
+			assert 'flatness_index' in circuit
