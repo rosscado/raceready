@@ -31,18 +31,6 @@ stages:
         id: !anything
         flatness_index: !anything
 
-  - name: Retrieve all the circuits
-    request:
-      url: "{api.server}/api/circuits/"
-      method: GET
-      headers:
-        content-type: application/json
-    response:
-      status_code: 200
-      body:
-        - id: !anything
-          flatness_index: !anything
-
   - name: Delete the circuit
     request:
       url: "{api.server}/api/circuits/{circuit_fixture_id}"

@@ -102,7 +102,7 @@ class PeristentModel:
 		return [event for event in all_events]
 
 event_status = api.model('Status', {
-	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'confirmed', 'completed'], default='scheduled', example='scheduled'),
+	'state': fields.String(description='Is the event still on?', enum=['scheduled', 'provisional', 'cancelled', 'confirmed', 'completed'], default='scheduled'),
 	'url': fields.String(description='The primary URL where notice of the most recent state change was posted', example='http://www.banbridgecc.com/eventcancellation/')
 })
 
@@ -120,6 +120,11 @@ a_circuit = api.model('Circuit', {
 	'flatness_index': fields.Float(description='indicates how close to flat is the circuit', example='0.12', readonly=True)
 })
 
+a_course = api.model('Course', {
+	'laps': fields.Integer(description='Number of laps of the circuit', example=5),
+	'circuit': fields.Nested(a_circuit, description='The course includes one or more laps of this circuit')
+})
+
 a_sign_on = api.model('Sign On', {
 	'location': fields.String(description='Where is the sign on?', example='Primary School, Donore, Co. Down'),
 	'start_time': fields.DateTime(description='When does sign on open? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 11:00'),
@@ -127,9 +132,10 @@ a_sign_on = api.model('Sign On', {
 })
 
 a_stage = api.model('Stage', {
-	'distance_km': fields.Float(description='The length of the stage in kilometres', example=80),
-	'stage_type': fields.String(required=True, description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
+	'title': fields.String(description='The title of the stage or race, especially if different from the headline event', example='John Beggs Memorial Cup'),
+	'stage_type': fields.String(description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
 	'start_time': fields.DateTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
+	'course': fields.Nested(a_course, description='The race course: the circuit*laps + any other segments')
 })
 
 a_contact = api.model('Contact', {
@@ -151,8 +157,7 @@ an_event = api.model('Base Event', {
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
 	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race'),
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
-	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event'),
-	'stages': fields.List(fields.Nested(a_stage, description='The stage list. One-day events have a single stage.'))
+	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event')
 })
 
 one_day_event = api.inherit('One Day Event', an_event, {
