@@ -1,9 +1,6 @@
 ---
 test_name: Get some clubs from the JSON clubs API
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Get club titles from the connected db
     request:
@@ -14,9 +11,6 @@ stages:
 
 ---
 test_name: Clubs lifecycle
-
-includes:
-  - !include config.yaml
 
 stages:
   - name: Create a club

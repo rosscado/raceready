@@ -1,9 +1,6 @@
 ---
 test_name: A fully worked example creating the Laragh Classic 2018 event
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Create the circuit
     request:

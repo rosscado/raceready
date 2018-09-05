@@ -34,6 +34,8 @@ Test cases are written with `pytest` and `tavern` modules and are contained in t
 Run the unit test suite as follows:
 ```bash
 python -m pytest --ignore=tests/fvt  # unit tests only
+python apps/app.py & # start app for local tavern tests
+python -m pytest --tavern-global-cfg=tests/fvt/config-local.yaml # local tavern tests
 ```
 
 ## 2.b Running the app locally
@@ -101,7 +103,7 @@ cf apps
 The `raceready` application connects to a NoSQL database on IBM Cloud.
 
 * The application's Cloudant service instances and their connected applications are listed under the [`Data & Analytics` section](https://console.bluemix.net/services/cloudantnosqldb/6df81126-94cd-48a7-a94d-dc49621eac7f?paneId=connectedObjects&ace_config=%7B%22region%22%3A%22eu-gb%22%2C%22orgGuid%22%3A%22639a52b7-76ff-42e0-93b8-77353d27bafe%22%2C%22spaceGuid%22%3A%228bb7aeb1-658d-4eb3-9487-faa25d2633fa%22%2C%22redirect%22%3A%22https%3A%2F%2Fconsole.bluemix.net%2Fdashboard%2Fapps%3Fenv_id%3Dibm%253Ayp%253Aeu-gb%22%2C%22bluemixUIVersion%22%3A%22v6%22%2C%22crn%22%3A%22crn%3Av1%3Abluemix%3Apublic%3Acloudantnosqldb%3Aeu-gb%3As%2F8bb7aeb1-658d-4eb3-9487-faa25d2633fa%3A6df81126-94cd-48a7-a94d-dc49621eac7f%3Acf-service-instance%3A%22%2C%22id%22%3A%226df81126-94cd-48a7-a94d-dc49621eac7f%22%7D&env_id=ibm%3Ayp%3Aeu-gb).
-* An application instance's connection to a Cloudant service instance is configured in [`Cloud Foundry apps`](https://console.bluemix.net/dashboard/apps?env_id=ibm%3Ayp%3Aeu-gb)/``$app_name`/`Connections`
+* An application instance's connection to a Cloudant service instance is configured in [`Cloud Foundry apps`](https://console.bluemix.net/dashboard/apps?env_id=ibm%3Ayp%3Aeu-gb)/`$app_name`/`Connections`
 
 Environment variables separate deployment settings from source code. For example, instead of hardcoding a database password, this is stored in an environment variable referenced in source code. [Learn more...](/docs/manageapps/depapps.html#app_env)
 Database credentials and other connection information is exposed to the application using the `VCAP_SERVICES` environment variable. This environment variable is only available to the application when it is running on IBM Cloud.

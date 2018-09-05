@@ -1,9 +1,6 @@
 ---
 test_name: Circuits lifecycle
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Create a circuit
     request:

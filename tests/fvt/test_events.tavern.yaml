@@ -1,9 +1,6 @@
 ---
 test_name: Get some events from the JSON events API
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Get event titles from the connected db
     request:
@@ -14,9 +11,6 @@ stages:
 
 ---
 test_name: Event lifecycle
-
-includes:
-  - !include config.yaml
 
 stages:
   - name: Create an event
@@ -117,9 +111,6 @@ stages:
 ---
 test_name: Event organisers
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Create an event
     request:
@@ -161,9 +152,6 @@ stages:
 ---
 test_name: One Day Event
 
-includes:
-  - !include config.yaml
-
 stages:
   - name: Create a one-day event
     request:
@@ -201,9 +189,6 @@ stages:
 
 ---
 test_name: Multi Day Event
-
-includes:
-  - !include config.yaml
 
 stages:
   - name: Create a multi-day stage race
