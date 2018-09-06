@@ -48,6 +48,11 @@ a_sign_on = api.model('Sign On', {
 	'end_time': SpaceTime(description='When does sign on close? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 12:30'),
 })
 
+a_category = api.model('Category', {
+	'id': fields.String(required=True, readonly=True, description='The category identifier', enum=['A1', 'A2', 'A3', 'A4', 'J', 'W'], default='A1'),
+	'description': fields.String(description='What are the qualifying criteria for this category, etc.', example='Highest amateur open racing rank')
+})
+
 a_stage = api.model('Stage', {
 	'title': fields.String(description='The title of the stage or race, especially if different from the headline event', example='John Beggs Memorial Cup'),
 	'stage_type': fields.String(description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),

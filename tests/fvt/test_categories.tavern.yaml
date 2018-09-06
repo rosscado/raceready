@@ -1,0 +1,49 @@
+---
+test_name: Get all valid categories
+
+stages:
+  - name: Get all ootb categories
+    request:
+      url: "{api.server}/api/categories/"
+      method: GET
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        - id: A1
+        - id: A2
+        - id: A3
+        - id: A4
+        - id: J
+        - id: W
+
+---
+test_name: POST invalid categories
+
+stages:
+  - name: POST invalid category
+    request:
+      url: "{api.server}/api/categories/"
+      method: POST
+      json:
+        id: B1
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+---
+test_name: PUT invalid categories
+
+stages:
+  - name: Update non-existent category
+    request:
+      url: "{api.server}/api/categories/"
+      method: PUT
+      json:
+        id: B1
+      headers:
+        content-type: application/json
+    response:
+      status_code: 404
