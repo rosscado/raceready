@@ -36,7 +36,7 @@ class ResourceTestCase:
 
 	def test_post_resource(self, client, resource_data):
 		post_rv = client.post(self.ns, json=resource_data)
-		assert post_rv.status_code == 201
+		assert post_rv.status_code == 201, "Resource was not created. Expected 201, got {status}\n{body}".format(status=post_rv.status, body=post_rv.get_json())
 		resource_result = post_rv.get_json()
 		assert resource_result is not None
 		for field in resource_data:
@@ -76,7 +76,7 @@ class ResourceTestCase:
 
 	def test_put_resource(self, client, resource_fixture):
 		put_rv = client.put('{namespace}{id}'.format(namespace=self.ns, id=resource_fixture['id']), json=resource_fixture)
-		assert put_rv.status_code == 204
+		assert put_rv.status_code == 204, "Resource was not created. Expected 204, got {status}\n{body}".format(status=put_rv.status, body=put_rv.get_json())
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
 		for property in resource_fixture:
 			assert resource_result[property] == resource_fixture[property]
@@ -110,6 +110,6 @@ class ResourceTestCase:
 		(name, value) = field
 		resource_fixture[name] = value
 		put_rv = client.put('{ns}{id}'.format(ns=self.ns,id=resource_fixture['id']), json=resource_fixture)
-		assert put_rv.status_code == 204
+		assert put_rv.status_code == 204, "Resource was not created. Expected 204, got {status}\n{body}".format(status=put_rv.status, body=put_rv.get_json())
 		resource_result = self.get_resource_fixture(client, resource_fixture['id'])
 		assert name in resource_result and resource_result[name] == resource_fixture[name]

@@ -1,7 +1,8 @@
 from flask import request
 from flask_restplus import Resource
 from api.restplus import api
-from api.logic import a_circuit, data_store
+from api.models import a_circuit
+from api.logic import data_store
 
 ns = api.namespace('circuits', description='Define a circuit around which a race laps')
 

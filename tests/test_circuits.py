@@ -1,6 +1,5 @@
 import pytest
 from resource import ResourceTestCase
-from context import app # check sys.path if this fails
 
 arbitrary_url='https://www.mapmyride.com/routes/view/2189856949' # default circuit fixture url
 arbitrary_distance_km=86.95
