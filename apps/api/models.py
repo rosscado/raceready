@@ -31,6 +31,7 @@ a_club = api.model('Club', {
 a_circuit = api.model('Circuit', {
 	'id': fields.Integer(description='The unique identifier of a circuit (internal)', readonly=True),
 	'url': fields.String(description="The route or segment on a route mapping service", example='https://www.strava.com/segments/16848061'),
+	'title': fields.String(description='Name of the circuit, if notable', example='Jungle Loop Anticlockwise'),
 	'distance_km': fields.Float(description='The length in kilometres of one lap of the circuit', example=7.85),
 	'elevation_gain_m': fields.Integer(description='The total elevation gain (ascent) in metres over one lap of the circuit', example=65),
 	'flatness_index': fields.Float(description='indicates how close to flat is the circuit', example='0.12', readonly=True)
@@ -43,8 +44,8 @@ a_course = api.model('Course', {
 
 a_sign_on = api.model('Sign On', {
 	'location': fields.String(description='Where is the sign on?', example='Primary School, Donore, Co. Down'),
-	'start_time': fields.DateTime(description='When does sign on open? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 11:00'),
-	'end_time': fields.DateTime(description='When does sign on close? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 12:30'),
+	'start_time': SpaceTime(description='When does sign on open? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 11:00'),
+	'end_time': SpaceTime(description='When does sign on close? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 12:30'),
 })
 
 a_stage = api.model('Stage', {
