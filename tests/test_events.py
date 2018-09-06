@@ -1,6 +1,5 @@
 import pytest
 from resource import ResourceTestCase
-from context import app # check sys.path if this fails
 
 arbitrary_title='Unit test event' # default event fixture title
 arbitrary_date='1970-01-01' # a date to use when the date doesn't matter (UNIX epoch)

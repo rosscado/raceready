@@ -1,6 +1,5 @@
 import pytest
 from resource import ResourceTestCase
-from context import app # check sys.path if this fails
 
 arbitrary_title='Unit test club' # default club fixture title
 arbitrary_url='http://www.clontarfcc.com/' # default club fixture url

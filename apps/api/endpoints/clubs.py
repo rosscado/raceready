@@ -1,7 +1,8 @@
 from flask import request
 from flask_restplus import Resource
 from api.restplus import api
-from api.logic import a_club, data_store
+from api.models import a_club
+from api.logic import data_store
 
 ns = api.namespace('clubs', description='Operations related to cycling clubs')
 
