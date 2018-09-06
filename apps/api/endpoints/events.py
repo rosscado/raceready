@@ -1,7 +1,7 @@
 from flask import request
 from flask_restplus import Resource
 from api.restplus import api
-from api.logic import an_event, data_store
+from api.logic import one_day_event as an_event, data_store
 
 ns = api.namespace('events', description='Operations related to scheduled events')
 

@@ -1,0 +1,102 @@
+---
+test_name: A fully worked example creating the Laragh Classic 2018 event
+
+stages:
+  - name: Create the circuit
+    request:
+      url: "{api.server}/api/circuits/"
+      json:
+        url: https://www.mapmyride.com/routes/view/2189856949
+        distance_km: 86.95
+        elevation_gain_m: 1315
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          circuit_id: id
+
+  - name: Create the event
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: Laragh Classic
+        date: "2018-09-01"
+        event_type: road race
+        location: Laragh, Ireland
+        desciption: Three races with the A1/A2 Laragh Classic, the A3 Martin Vereker Memorial and the Womens Laragh Classic with places limited to 60 riders in each race. Both the A1/2 Laragh Classic and Womens Laragh Classic will form round 5 of the Cycling Ireland National Series 2018. Each race is 1 lap of the below course, 87km with 1315m of climbing, finishing at the top of the Wicklow Gap.
+        organised_by:
+          club:
+            title: St. Tiernans Cycling Club
+            url: http://www.sttiernanscc.com/
+            social_media:
+              handle: "@StTiernansCC"
+          contacts:
+            - name: Daragh O'Toole
+              email: daraghot@gmail.com
+              phone: "+353 087 414 8283"
+            - email: ruane.ciaran@gmail.com
+              phone: "+353 83 4437359"
+        registration:
+          methods:
+            - type: online
+              url: https://register.primoevents.com/ps/event/FriendsFirstLaraghClassic2018
+              state: closed
+            - type: ontheday
+              state: limited
+        url_primary: http://www.sttiernanscc.com/
+        url_ci: https://cyclingireland.azolve.com/Workbench.mvc/public/eventDetails?EventId=1077384
+        sign_on:
+          venue: Brockagh Centre, Laragh, Co.Wicklow
+          start_time: "2018-09-01 08:30"
+          end_time: "2018-09-01 10:30"
+        status:
+          state: confirmed
+        social_media:
+          hashtag: "#LaraghClassic"
+        races:
+          - title: Friends First Laragh Classic
+            eligible_categories:
+              - A1
+              - A2
+            stage_type: road race
+            handicapped: false
+            start_time: "2018-09-01 11:00"
+            course:
+              laps: 1
+              circuit_id: {circuit_id}
+          - title: Friends First Womens Laragh Classic
+            eligible_categories:
+              - W
+            stage_type: road race
+            start_time: "2018-09-01 11:00"
+            course:
+              laps: 1
+              circuit_id: {circuit_id}
+          - title: Martin Vereker Memorial
+            eligible_categories:
+              - A3
+              - J
+            stage_type: road race
+            handicapped: false
+            start_time: "2018-09-01 11:00"
+            course:
+              laps: 1
+              circuit_id: {circuit_id}
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          event_id: id
+
+  - name: Delete the event
+    request:
+      url: "{api.server}/api/events/{event_id}"
+      method: DELETE
+    response:
+      status_code: 204
