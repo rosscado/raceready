@@ -5,6 +5,7 @@ from api.restplus import api
 from api.endpoints.events import ns as events_namespace
 from api.endpoints.clubs import ns as clubs_namespace
 from api.endpoints.circuits import ns as circuits_namespace
+from api.endpoints.categories import ns as categories_namespace
 import atexit
 import os
 import json
@@ -17,6 +18,7 @@ def init_app(flask_app):
 	api.add_namespace(events_namespace)
 	api.add_namespace(clubs_namespace)
 	api.add_namespace(circuits_namespace)
+	api.add_namespace(categories_namespace)
 	flask_app.register_blueprint(blueprint)
 
 @atexit.register

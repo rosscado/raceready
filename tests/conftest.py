@@ -47,4 +47,8 @@ def resource_fixture(client, resource_name, resource_data):
 	resource_result = post_rv.get_json()
 	yield resource_result
 
-	client.delete('/api/{resource}/{id}'.format(resource=resource_name, id=resource_result['id']))
+	if 'id' in resource_result:
+		client.delete('/api/{resource}/{id}'.format(resource=resource_name, id=resource_result['id']))
+	else:
+		print('Unable to teardown {entity} because POST response did not contain an id'.format(entity=resource_name))
+		print('POST response: {json}'.format(json=resource_result))

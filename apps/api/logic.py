@@ -8,6 +8,14 @@ class TransientModel:
 		self.events = []
 		self.clubs = []
 		self.circuits = []
+		self.categories = [
+			{'id': 'A1'},
+			{'id': 'A2'},
+			{'id': 'A3'},
+			{'id': 'A4'},
+			{'id': 'J'},
+			{'id': 'W'}
+		]
 
 	# event related functions
 	def get_events(self):
@@ -86,6 +94,41 @@ class TransientModel:
 
 	def delete_circuit(self, id):
 		del self.circuits[id-1]
+
+	# category related functions
+	def get_categories(self):
+		return self.categories
+
+	def create_category(self, payload):
+		#doc = db_client.create_document(api.payload)
+		assert 'id' in payload
+		id = payload['id']
+		existing = self.get_category(id)
+		if existing:
+			self.update_category(id, payload)
+		else:
+			self.categories.append(payload)
+		assert 'id' in payload
+		return payload
+
+	def get_category(self, id):
+		for cat in self.categories:
+			if cat['id'] == id:
+				return cat
+		return None
+
+	def update_category(self, id, payload):
+		cat = self.get_category(id)
+		if cat:
+			self.categories.remove(cat)
+			self.categories.append(payload)
+		return None
+
+	def delete_category(self, id):
+		cat = self.get_category(id)
+		if cat:
+			self.categories.remove(cat)
+
 
 from database.clients import get_db
 from cloudant.result import Result

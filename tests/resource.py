@@ -90,8 +90,9 @@ class ResourceTestCase:
 		test that the API will reject requests to update the resource
 		if any of those fields are missing'''
 		for field in required_fields:
+			id = resource_fixture['id'] # save incase 'id' is one of the fields under test
 			del resource_fixture[field]
-			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=resource_fixture['id']), json=resource_fixture)
+			post_rv = client.put('{ns}{id}'.format(ns=self.ns, id=id), json=resource_fixture)
 			assert post_rv.status_code == 400
 
 	def test_delete_resource(self, client, resource_fixture):
