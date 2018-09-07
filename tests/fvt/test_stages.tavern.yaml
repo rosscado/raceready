@@ -58,3 +58,25 @@ stages:
       method: DELETE
     response:
       status_code: 204
+
+---
+test_name: Invalid races/stages
+
+stages:
+  - name: Create invalid race
+    request:
+      url: "{api.server}/api/events/"
+      json:
+        title: Laragh Classic
+        date: "2018-09-01"
+        event_type: road race
+        races:
+          - title: Ineligible race
+            eligible_categories:
+              - A1
+              - B1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
