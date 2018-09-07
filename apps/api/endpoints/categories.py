@@ -18,7 +18,7 @@ class Categories(Resource):
 		doc = data_store.create_category(api.payload)
 		return doc, 201
 
-@ns.route('/<int:id>')
+@ns.route('/<string:id>')
 @api.response(404, 'Category not found')
 class Category(Resource):
 	def get(self, id):

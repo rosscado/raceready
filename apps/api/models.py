@@ -49,7 +49,7 @@ a_sign_on = api.model('Sign On', {
 })
 
 a_category = api.model('Category', {
-	'id': fields.String(required=True, readonly=True, description='The category identifier', enum=['A1', 'A2', 'A3', 'A4', 'J', 'W'], default='A1'),
+	'id': fields.String(required=True, description='The category identifier', enum=['A+', 'A1', 'A2', 'A3', 'A4', 'J', 'W'], default='A1'),
 	'description': fields.String(description='What are the qualifying criteria for this category, etc.', example='Highest amateur open racing rank')
 })
 

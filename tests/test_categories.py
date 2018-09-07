@@ -20,3 +20,7 @@ def required_fields():
 class TestCategories(ResourceTestCase):
 	# must declare ns fixture in this module to override dependent fixtures
 	ns = '/api/{resources}/'.format(resources=resource_name())
+
+	def test_posted_category_has_id(self, client, resource_fixture):
+		"""Test that POST responses contain id"""
+		assert 'id' in resource_fixture

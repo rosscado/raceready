@@ -37,13 +37,13 @@ stages:
 test_name: PUT invalid categories
 
 stages:
-  - name: Update non-existent category
+  - name: Update invalid (and non-existent) category
     request:
-      url: "{api.server}/api/categories/"
+      url: "{api.server}/api/categories/B1"
       method: PUT
       json:
         id: B1
       headers:
         content-type: application/json
     response:
-      status_code: 404
+      status_code: 400
