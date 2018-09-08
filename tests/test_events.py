@@ -15,7 +15,7 @@ def resource_data():
 	return {
 		'title': 'The John Beggs',
 		'date': '2018-08-11',
-		'url': 'https://goo.gl/tVymnx',
+		'url_primary': 'https://goo.gl/tVymnx',
 		'location': 'Dromore, Co. Down',
 		'event_type': 'road race'
 	}
