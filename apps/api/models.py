@@ -22,10 +22,16 @@ event_status = api.model('Status', {
 	'url': fields.String(description='The primary URL where notice of the most recent state change was posted', example='http://www.banbridgecc.com/eventcancellation/')
 })
 
+social_media = api.model('Social Media', {
+	'handle': fields.String(description='Twitter style username/account identifier', pattern='@.+', example='@banbridgecc'),
+	'hashtag': fields.String(description='Twitter style tag/label', pattern='#.+', example='#thebeggs18')
+})
+
 a_club = api.model('Club', {
 	'id': fields.Integer(description='The unique identifier of a club (internal)', readonly=True),
 	'title': fields.String(required=True, description='The full name of the club', example='Banbridge Cycling Club'),
-	'url': fields.String(description="The club's primary web address", example='http://www.banbridgecc.com/')
+	'url': fields.String(description="The club's primary web address", example='http://www.banbridgecc.com/'),
+	'social_media': fields.Nested(social_media, description="How to follow the club on social media")
 })
 
 a_circuit = api.model('Circuit', {
@@ -83,7 +89,8 @@ an_event = api.model('Base Event', {
 	'location': fields.String(description='The address of the event. Should identify at least the town.', example='Donore, Co. Down'),
 	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race'),
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
-	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event')
+	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event'),
+	'social_media': fields.Nested(social_media, description='Where to follow the event on social media')
 })
 
 one_day_event = api.inherit('One Day Event', an_event, {
