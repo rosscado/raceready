@@ -40,6 +40,21 @@ stages:
       body:
         title: Lifecycle test event
 
+  - name: Update the event with invalid inputs
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Lifecycle test event updated
+        date: "1970-01-02"
+        event_type: criterium
+        url_primary: http://www.lifecyclevent.com/
+        url_cycling_ireland: http://www.notavalidurl.com/cyclingireland
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
   - name: Update the event
     request:
       url: "{api.server}/api/events/{event_fixture_id}"
@@ -47,6 +62,8 @@ stages:
         title: Lifecycle test event updated
         date: "1970-01-02"
         event_type: criterium
+        url_primary: http://www.lifecyclevent.com/
+        url_cycling_ireland: https://cyclingireland.azolve.com/Workbench.mvc/public/eventDetails?EventId=1077384
       method: PUT
       headers:
         content-type: application/json
