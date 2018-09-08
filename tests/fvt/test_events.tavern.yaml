@@ -55,7 +55,7 @@ stages:
     response:
       status_code: 400
 
-  - name: Update the event
+  - name: Update the event with valid urls
     request:
       url: "{api.server}/api/events/{event_fixture_id}"
       json:
@@ -85,6 +85,21 @@ stages:
               location: Mondello Park, Co. Kildare
               start_time: 1970-01-01 18:45
               end_time: 1970-01-01 19:15
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
+  - name: Add social media
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Mondello GP
+        date: "1970-01-02"
+        event_type: criterium
+        social_media:
+          hashtag: "#mondello"
       method: PUT
       headers:
         content-type: application/json
