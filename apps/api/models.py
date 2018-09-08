@@ -48,13 +48,16 @@ a_sign_on = api.model('Sign On', {
 	'end_time': SpaceTime(description='When does sign on close? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 12:30'),
 })
 
+valid_categories=['A+', 'A1', 'A2', 'A3', 'A4', 'J', 'W']
+
 a_category = api.model('Category', {
-	'id': fields.String(required=True, description='The category identifier', enum=['A+', 'A1', 'A2', 'A3', 'A4', 'J', 'W'], default='A1'),
+	'id': fields.String(required=True, description='The category identifier', enum=valid_categories, default='A1'),
 	'description': fields.String(description='What are the qualifying criteria for this category, etc.', example='Highest amateur open racing rank')
 })
 
 a_stage = api.model('Stage', {
 	'title': fields.String(description='The title of the stage or race, especially if different from the headline event', example='John Beggs Memorial Cup'),
+	'eligible_categories': fields.List(fields.String(description='Categories that can compete in this stage', enum=valid_categories, default='A1')),
 	'stage_type': fields.String(description='Is this stage a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium'], default='road race'),
 	'start_time': SpaceTime(description='What time does the stage start? ISO 8601 format: YYMM-MM-DD HH:MM', example='1970-01-01 13:00'),
 	'course': fields.Nested(a_course, description='The race course: the circuit*laps + any other segments')
