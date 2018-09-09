@@ -106,6 +106,41 @@ stages:
     response:
       status_code: 204
 
+  - name: Add registration method
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Mondello GP
+        date: "1970-01-02"
+        event_type: criterium
+        registration:
+          methods:
+            - type: ontheday
+              state: open
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
+  - name: Close registration (event full)
+    request:
+      url: "{api.server}/api/events/{event_fixture_id}"
+      json:
+        title: Mondello GP
+        date: "1970-01-02"
+        event_type: criterium
+        registration:
+          methods:
+            - type: ontheday
+              state: closed
+              url: http://sorryaboutthat.com/eventfull
+      method: PUT
+      headers:
+        content-type: application/json
+    response:
+      status_code: 204
+
   - name: Cancel the event
     request:
       url: "{api.server}/api/events/{event_fixture_id}"

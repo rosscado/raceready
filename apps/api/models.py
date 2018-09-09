@@ -80,6 +80,16 @@ organisers = api.model('Organisers', {
 	'contacts': fields.List(fields.Nested(a_contact, description='A list of persons to contact about the event'))
 })
 
+registration_method = api.model('Registration Method', {
+	'type': fields.String(description='The means of registration', enum=['online', 'ontheday'], default='ontheday'),
+	'url': fields.String(description='Online registration URL or registration status change notification', example='http://www.signup.com/thebeggs18'),
+	'state': fields.String(description='Can competitors register for the event?', enum=['open', 'limited', 'closed'], default='open')
+})
+
+registration = api.model('Registration', {
+	'methods': fields.List(fields.Nested(registration_method, description='A way to register for an event'))
+})
+
 an_event = api.model('Base Event', {
 	'id': fields.Integer(description='The unique identifier of an event (internal)', readonly=True),
 	'title': fields.String(required=True, description='The name of the event as promoted publically', example='The John Beggs Memorial'),
@@ -90,7 +100,8 @@ an_event = api.model('Base Event', {
 	'event_type': fields.String(required=True,description='Is the event a road race, time trial, etc?', enum=['road race', 'time trial', 'hill climb', 'criterium', 'stage race'], default='road race'),
 	'status': fields.Nested(event_status, description='Records any schedule changes. If absent assume event is still scheduled normally'),
 	'organised_by': fields.Nested(organisers, description='Group (club and persons) organising the event'),
-	'social_media': fields.Nested(social_media, description='Where to follow the event on social media')
+	'social_media': fields.Nested(social_media, description='Where to follow the event on social media'),
+	'registration': fields.Nested(registration, description='Event registration information')
 })
 
 one_day_event = api.inherit('One Day Event', an_event, {
