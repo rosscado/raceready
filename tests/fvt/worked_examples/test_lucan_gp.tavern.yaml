@@ -105,6 +105,72 @@ stages:
     response:
       status_code: 204
 
+  - name: Create the circuit
+    request:
+      url: "{api.server}/api/circuits/"
+      json:
+        title: Lap of green sheds circuit
+        url: https://www.strava.com/segments/681417
+        distance_km: 16.5
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+      save:
+        body:
+          circuit_id: id
+
+  - name: Add circuits to all races
+    request:
+      url: "{api.server}/api/events/{event_id}"
+      json:
+        <<: *initial_event_info
+        races:
+          - title: Lucan GP
+            eligible_categories:
+              - A+
+              - A1
+              - A2
+              - A3
+            stage_type: road race
+            handicapped: true
+            start_time: "2018-09-15 10:30"
+            course:
+              distance_km: 80
+              circuit_id: {circuit_id}
+          - title: Lucan GP A4
+            eligible_categories:
+              - A4
+              - W
+            stage_type: road race
+            start_time: "2018-09-15 10:30"
+            course:
+              distance_km: 60
+              circuit_id: {circuit_id}
+      method: PUT
+    response:
+      status_code: 204
+
+  - name: Verify that course distances were auto-calculated
+    request:
+      url: "{api.server}/api/events/{event_id}"
+      method: GET
+    response:
+      status_code: 200
+      body:
+        races:
+          - title: Lucan GP
+            course:
+              distance_km: 80
+              circuit_id: {circuit_id}
+              laps: 4
+          - title: Lucan GP A4
+            course:
+              distance_km: 60
+              circuit_id: {circuit_id}
+              laps: 3
+
   - name: Delete the event
     request:
       url: "{api.server}/api/events/{event_id}"
